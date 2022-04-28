@@ -3,9 +3,10 @@
  * See LICENSE in the project root for license information.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 /* global document, Office, Word */
 let ezpPrinting: any;
-let openAuthBtn: HTMLButtonElement;
+let authBtn: HTMLButtonElement;
 let authorized: boolean = false;
 let authSection: HTMLDivElement;
 
@@ -14,7 +15,7 @@ Office.onReady(async (info) => {
   if (info.host === Office.HostType.Word) {
     //authorized = await ezpPrinting.isAuthorized();
     ezpPrinting = document.querySelector("ezp-printing");
-    openAuthBtn = document.querySelector("#openAuthBtn");
+    authBtn = document.querySelector("#authButton");
     authSection = document.querySelector("#authSection");
     if (authorized) {
       authSection.style.display = "none";
@@ -22,7 +23,7 @@ Office.onReady(async (info) => {
     } else {
       ezpPrinting.style.display = "none";
       authSection.style.display = "block";
-      openAuthBtn.addEventListener("click", openAuthDialog);
+      authBtn.addEventListener("click", openAuthDialog);
     }
   }
 });
@@ -110,6 +111,7 @@ async function onGotAllSlices(docdataSlices) {
   }
 
   const finalPDF = new File([new Uint8Array(docdata)], "ezp_word_printing.pdf", { type: "application/pdf" });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   file = finalPDF;
   download(finalPDF);
 }
@@ -124,21 +126,22 @@ function download(file) {
   link.click();
 
   document.body.removeChild(link);
+  // eslint-disable-next-line no-undef
   window.URL.revokeObjectURL(url);
 }
 
 async function openAuthDialog() {
   const authUri = await ezpPrinting.getAuthUri();
   // open office dialog
-  Office.context.ui.displayDialogAsync(authUri, { height: 300, width: 300 }, (result) => {
+  Office.context.ui.displayDialogAsync(authUri, { height: 300, width: 300, promptBeforeOpen: false }, (result) => {
     const dialog = result.value;
     // process message from the dialog
     dialog.addEventHandler(Office.EventType.DialogMessageReceived, (arg: any) => {
-      ezpPrinting.setAttribute('code', arg.message);
+      ezpPrinting.setAttribute("code", arg.message);
       dialog.close();
       ezpPrinting.style.display = "block";
       authSection.style.display = "none";
       ezpPrinting.open();
-    })
+    });
   });
 }

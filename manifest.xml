@@ -5,10 +5,10 @@
   <ProviderName>Ezeep</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Print Now with ezeep"/>
-  <Description DefaultValue="A template to get started."/>
+  <Description DefaultValue="Print Now with ezeep"/>
   <IconUrl DefaultValue="https://localhost:3000/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-64.png"/>
-  <SupportUrl DefaultValue="https://www.contoso.com/help"/>
+  <SupportUrl DefaultValue="https://support.ezeep.com"/>
   <AppDomains>
     <AppDomain>https://account.dev.azdev.ezeep.com</AppDomain>
   </AppDomains>

@@ -82,5 +82,6 @@ b {
 .flexbox {
   display: flex;
   justify-content: center;
-  margin: 30px;
+  align-items: center;
+  margin: 20px;
 }
