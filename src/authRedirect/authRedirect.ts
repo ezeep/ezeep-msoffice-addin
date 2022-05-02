@@ -1,5 +1,3 @@
-// nö dnake
-
 Office.onReady(async (info) => {
   sendCodeToAddin();
 });

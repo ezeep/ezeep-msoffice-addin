@@ -26,34 +26,31 @@
   </head>
 
   <body class="ms-font-m ms-welcome ms-Fabric">
-    <div class="flexbox">
-      <ezp-printing
-        clientid="9I9DPCHGvsXjraQfwuRzL7OlVpqiryJ19yfYLeLH"
-        redirecturi="https://localhost:3000/authRedirect.html"
-        trigger="button"
-        fileurl="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-        filename="dummypdf"
-        filetype="pdf"
-        authapihosturl="account.dev.azdev.ezeep.com"
-        printapihosturl="printapi.dev.azdev.ezeep.com"
-        appearance="light"
-      >
-      </ezp-printing>
+    <ezp-printing
+      clientid="9I9DPCHGvsXjraQfwuRzL7OlVpqiryJ19yfYLeLH"
+      redirecturi="https://localhost:3000/authRedirect.html"
+      trigger="button"
+      filetype="pdf"
+      authapihosturl="account.dev.azdev.ezeep.com"
+      printapihosturl="printapi.dev.azdev.ezeep.com"
+      appearance="light"
+    >
+    </ezp-printing>
 
-      <div id="authSection">
-        <img src="https://localhost:3000/assets/icon-80.png" alt="ezeep logo">
-        <div class="ms-welcome__info">
-          <p class="ms-welcome__subTitle">Bring the power of ezeep printing to your Office App.</p>
-        </div>
-
-        <div role="button" id="authButton" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
-          <span class="ms-Button-label">Sign in</span>
-        </div>
-        <p>or <a target="_blank" href="https://ezeep.com">create an account</a></p>
-        <hr style="opacity: 0.5;">
+    <div id="authSection">
+      <img src="https://localhost:3000/assets/icon-80.png" alt="ezeep logo" />
+      <div class="ms-welcome__info">
+        <p class="ms-welcome__subTitle">Bring the power of ezeep printing to Office.</p>
       </div>
 
-      <p id="message"></p>
+      <div role="button" id="authButton" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
+        <span class="ms-Button-label">Sign in</span>
+      </div>
+
+      <p>or <a target="_blank" href="https://ezeep.com">create an account</a></p>
+      <hr style="opacity: 0.5" />
     </div>
+
+    <p id="message"></p>
   </body>
 </html>

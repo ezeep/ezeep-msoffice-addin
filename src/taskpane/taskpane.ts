@@ -9,7 +9,9 @@ let ezpPrinting: any;
 let authBtn: HTMLButtonElement;
 let authorized: boolean = false;
 let authSection: HTMLDivElement;
+let fileData: any;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let file: File;
 Office.onReady(async (info) => {
   if (info.host === Office.HostType.Word) {
@@ -17,6 +19,7 @@ Office.onReady(async (info) => {
     ezpPrinting = document.querySelector("ezp-printing");
     authBtn = document.querySelector("#authButton");
     authSection = document.querySelector("#authSection");
+    await getFile();
     if (authorized) {
       authSection.style.display = "none";
       ezpPrinting.style.display = "block";
@@ -28,28 +31,12 @@ Office.onReady(async (info) => {
   }
 });
 
-// To read the URL of the current file, you need to write a callback function that returns the URL.
-// The following example shows how to:
-// 1. Pass an anonymous callback function that returns the value of the file's URL
-//    to the callback parameter of the getFilePropertiesAsync method.
-// 2. Display the value on the add-in's page.
-export function getFileUrl() {
-  // Get the URL of the current file.
-  Office.context.document.getFilePropertiesAsync(function (asyncResult) {
-    const fileUrl = asyncResult.value.url;
-    if (fileUrl == "") {
-      showMessage("The file hasn't been saved yet. Save the file and try again");
-    } else {
-      showMessage(fileUrl);
-    }
-  });
-}
 function showMessage(message) {
   const messageElement = document.getElementById("message");
   messageElement.innerText = message;
 }
 
-export async function getFileAsPDF() {
+export async function getFile() {
   //Get the current file
   Office.context.document.getFileAsync(Office.FileType.Pdf, async (asyncResult: Office.AsyncResult<Office.File>) => {
     if (asyncResult.status === Office.AsyncResultStatus.Failed) {
@@ -109,25 +96,11 @@ async function onGotAllSlices(docdataSlices) {
   for (var i = 0; i < docdataSlices.length; i++) {
     docdata = docdata.concat(docdataSlices[i]);
   }
-
-  const finalPDF = new File([new Uint8Array(docdata)], "ezp_word_printing.pdf", { type: "application/pdf" });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  file = finalPDF;
-  download(finalPDF);
-}
-
-function download(file) {
-  const link = document.createElement("a");
-  const url = URL.createObjectURL(file);
-
-  link.href = url;
-  link.download = file.name;
-  document.body.appendChild(link);
-  link.click();
-
-  document.body.removeChild(link);
-  // eslint-disable-next-line no-undef
-  window.URL.revokeObjectURL(url);
+  fileData = docdata;
+  const filearray = new Uint8Array(fileData);
+  const filestring = filearray.toString();
+  ezpPrinting.setAttribute("filedata", filestring);
+  ezpPrinting.setAttribute("filename", "test.pdf");
 }
 
 async function openAuthDialog() {
