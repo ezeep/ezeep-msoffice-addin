@@ -3,28 +3,39 @@
  * See LICENSE in the project root for license information.
  */
 
+import translationsDE from "../locales/de.json";
+import translationsEN from "../locales/en.json";
+import i18next from "i18next";
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 /* global document, Office, Word */
+// eslint-disable-next-line no-undef
 let ezpPrinting: any;
+let printingSection: any;
 let authBtn: HTMLButtonElement;
 let authorized: boolean = false;
 let authSection: HTMLDivElement;
 let fileData: any;
+let language: string;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let file: File;
 Office.onReady(async (info) => {
   if (info.host === Office.HostType.Word) {
-    //authorized = await ezpPrinting.isAuthorized();
+    language = Office.context.displayLanguage;
+    await initi18n(language);
+    translate();
     ezpPrinting = document.querySelector("ezp-printing");
+    printingSection = document.querySelector("#printingSection");
     authBtn = document.querySelector("#authButton");
     authSection = document.querySelector("#authSection");
     await getFile();
+    authorized = await ezpPrinting.checkAuth();
     if (authorized) {
       authSection.style.display = "none";
-      ezpPrinting.style.display = "block";
+      printingSection.style.display = "block";
     } else {
-      ezpPrinting.style.display = "none";
+      printingSection.style.display = "none";
       authSection.style.display = "block";
       authBtn.addEventListener("click", openAuthDialog);
     }
@@ -101,6 +112,9 @@ async function onGotAllSlices(docdataSlices) {
   const filestring = filearray.toString();
   ezpPrinting.setAttribute("filedata", filestring);
   ezpPrinting.setAttribute("filename", "test.pdf");
+  if (authorized) {
+    ezpPrinting.open();
+  }
 }
 
 async function openAuthDialog() {
@@ -112,9 +126,44 @@ async function openAuthDialog() {
     dialog.addEventHandler(Office.EventType.DialogMessageReceived, (arg: any) => {
       ezpPrinting.setAttribute("code", arg.message);
       dialog.close();
-      ezpPrinting.style.display = "block";
+      printingSection.style.display = "block";
       authSection.style.display = "none";
       ezpPrinting.open();
     });
   });
+}
+
+async function initi18n(language?: string) {
+  language = language.toLowerCase();
+  const resources = {
+    en: {
+      translation: translationsEN,
+    },
+    de: {
+      translation: translationsDE,
+    },
+  };
+  // override browserlanguage if language is provided
+  if (language != "") {
+    await i18next.init({
+      resources,
+      lng: language,
+      // allow keys to be phrases having `:`, `.`
+      nsSeparator: false,
+      fallbackLng: "en",
+    });
+  } else {
+    await i18next.init({
+      resources,
+      // eslint-disable-next-line no-undef
+      lng: navigator.language,
+      // allow keys to be phrases having `:`, `.`
+      nsSeparator: false,
+      fallbackLng: "en",
+    });
+  }
+}
+
+function translate() {
+  document.getElementById("printBtnDesc").innerText = i18next.t("button.description");
 }
