@@ -1,5 +1,7 @@
-{
-    "button": {
-        "description": "Hier klicken um zu drucken"
-    }
+{   
+    "subtitle": "",
+    "signIn": "Anmelden",
+    "printButton": "Hier klicken, um zu drucken",
+    "createAccount": "Account erstellen",
+    "or": "oder"
 }

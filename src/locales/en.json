@@ -1,5 +1,7 @@
-{
-    "button": {
-        "description": "Click here to print"
-    }
+{   
+    "subtitle": "Bring the power of ezeep printing to Office.",
+    "signIn": "Sign In",
+    "printButton": "Click here to print.",
+    "createAccount": "Create Account",
+    "or": "or"
 }

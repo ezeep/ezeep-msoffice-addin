@@ -22,7 +22,7 @@ let language: string;
 let file: File;
 Office.onReady(async (info) => {
   if (info.host === Office.HostType.Word) {
-    language = Office.context.displayLanguage;
+    language = Office.context.displayLanguage.toLowerCase();
     await initi18n(language);
     translate();
     ezpPrinting = document.querySelector("ezp-printing");
@@ -30,7 +30,7 @@ Office.onReady(async (info) => {
     authBtn = document.querySelector("#authButton");
     authSection = document.querySelector("#authSection");
     await getFile();
-    authorized = await ezpPrinting.checkAuth();
+    await (authorized = await ezpPrinting.checkAuth());
     if (authorized) {
       authSection.style.display = "none";
       printingSection.style.display = "block";
@@ -134,7 +134,6 @@ async function openAuthDialog() {
 }
 
 async function initi18n(language?: string) {
-  language = language.toLowerCase();
   const resources = {
     en: {
       translation: translationsEN,
@@ -165,5 +164,9 @@ async function initi18n(language?: string) {
 }
 
 function translate() {
-  document.getElementById("printBtnDesc").innerText = i18next.t("button.description");
+  document.getElementById("printBtnDesc").innerText = i18next.t("printButton");
+  document.getElementById("signInDesc").innerText = i18next.t("signIn");
+  document.getElementById("subtitle").innerText = i18next.t("subtitle");
+  document.getElementById("createAccDesc").innerText = i18next.t("createAccount");
+  document.getElementById("or").innerText = i18next.t("or");
 }
