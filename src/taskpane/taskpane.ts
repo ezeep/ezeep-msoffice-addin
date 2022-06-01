@@ -11,7 +11,7 @@ import i18next from "i18next";
 /* global document, Office, Word */
 // eslint-disable-next-line no-undef
 let ezpPrinting: any;
-let printingSection: any;
+let printingSection: HTMLDivElement;
 let authBtn: HTMLButtonElement;
 let authorized: boolean = false;
 let authSection: HTMLDivElement;
@@ -21,24 +21,31 @@ let language: string;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let file: File;
 Office.onReady(async (info) => {
+  ezpPrinting = document.querySelector("ezp-printing");
+  printingSection = document.querySelector("#printingSection");
+  authBtn = document.querySelector("#authButton");
+  authSection = document.querySelector("#authSection");
+
+  authSection.style.display = "block";
+  printingSection.style.display = "none";
+  authBtn.addEventListener("click", openAuthDialog);
+
+  language = Office.context.displayLanguage.toLowerCase();
+  await initi18n(language);
+  translate();
+
   if (info.host === Office.HostType.Word) {
-    language = Office.context.displayLanguage.toLowerCase();
-    await initi18n(language);
-    translate();
-    ezpPrinting = document.querySelector("ezp-printing");
-    printingSection = document.querySelector("#printingSection");
-    authBtn = document.querySelector("#authButton");
-    authSection = document.querySelector("#authSection");
-    await getFile();
-    await (authorized = await ezpPrinting.checkAuth());
-    if (authorized) {
-      authSection.style.display = "none";
-      printingSection.style.display = "block";
-    } else {
-      printingSection.style.display = "none";
-      authSection.style.display = "block";
-      authBtn.addEventListener("click", openAuthDialog);
-    }
+    authorized = await ezpPrinting.checkAuth();
+
+    getFile().then(() => {
+      if (authorized) {
+        authSection.style.display = "none";
+        printingSection.style.display = "block";
+      } else {
+        printingSection.style.display = "none";
+        authSection.style.display = "block";
+      }
+    });
   }
 });
 
@@ -112,9 +119,7 @@ async function onGotAllSlices(docdataSlices) {
   const filestring = filearray.toString();
   ezpPrinting.setAttribute("filedata", filestring);
   ezpPrinting.setAttribute("filename", "test.pdf");
-  if (authorized) {
-    ezpPrinting.open();
-  }
+  if (authorized) ezpPrinting.open();
 }
 
 async function openAuthDialog() {
