@@ -17,6 +17,7 @@ let authorized: boolean = false;
 let authSection: HTMLDivElement;
 let fileData: any;
 let language: string;
+let printBtn: HTMLButtonElement;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let file: File;
@@ -25,7 +26,9 @@ Office.onReady(async (info) => {
   printingSection = document.querySelector("#printingSection");
   authBtn = document.querySelector("#authButton");
   authSection = document.querySelector("#authSection");
+  printBtn = document.querySelector("#printBtn");
 
+  printBtn.onclick = async () => await ezpPrinting.open();
   authSection.style.display = "block";
   printingSection.style.display = "none";
   authBtn.addEventListener("click", openAuthDialog);
@@ -173,5 +176,6 @@ function translate() {
   document.getElementById("signInDesc").innerText = i18next.t("signIn");
   document.getElementById("subtitle").innerText = i18next.t("subtitle");
   document.getElementById("createAccDesc").innerText = i18next.t("createAccount");
+  document.getElementById("printBtnLabel").innerText = i18next.t("continue");
   document.getElementById("or").innerText = i18next.t("or");
 }

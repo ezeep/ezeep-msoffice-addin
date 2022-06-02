@@ -73,7 +73,7 @@
 .ms-Button.ms-Button--hero:focus .ms-Button-label{
   color: #005a9e;
   cursor: pointer;
-}*/
+}
 
 b {
     font-weight: bold;
@@ -83,7 +83,7 @@ b {
   display: flex;
   justify-content: center;
   align-items: center;
-}
+}*/
 
 /**
  * Custom properties
@@ -152,6 +152,26 @@ b {
 .ezp-logo > img {
   display: block;
   margin: 0;
+  width: 78px;
+  height: 32px;
+}
+
+/**
+ * Rocket
+ */
+
+.ezp-rocket {
+  width: 128px;
+  height: 152px;
+  display: flex;
+  justify-content: flex-end;
+  margin: 16px 0 0;
+}
+
+.ezp-rocket > img {
+  margin: 0;
+  width: 160px;
+  height: 160px;
 }
 
 /**

@@ -3,9 +3,9 @@ Office.onReady(async (info) => {
 });
 
 const sendCodeToAddin = async () => {
-  const params = new URLSearchParams(window.location.search)
-  const code = params.get('code')
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
   if (code) {
     Office.context.ui.messageParent(code);
   }
-}
+};

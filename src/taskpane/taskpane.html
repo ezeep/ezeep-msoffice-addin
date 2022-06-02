@@ -26,12 +26,25 @@
   </head>
 
   <body class="ms-font-m ms-welcome__main ms-Fabric">
-    <div id="printingSection">
-      <p id="printBtnDesc"></p>
+    <div id="printingSection" class="ezp-wrap">
+      <div class="ezp-panel">
+        <div class="ezp-rocket">
+          <img
+            src="https://localhost:3000/assets/rocket.png"
+            srcset="https://localhost:3000/assets/rocket.png 1x, https://localhost:3000/assets/rocket@2x.png 2x"
+            alt="ezeep Logo">
+        </div>
+        <p id="printBtnDesc" class="ezp-panel__description ms-fontSize-14"></p>
+        <div class="ezp-panel__actions">
+          <button role="button" id="printBtn" class="ezp-button ezp-button--primary">
+            <span id="printBtnLabel" class="ms-fontSize-14 ms-fontWeight-semibold"></span>
+          </button>
+        </div>
+      </div>
       <ezp-printing
         clientid="9I9DPCHGvsXjraQfwuRzL7OlVpqiryJ19yfYLeLH"
         redirecturi="https://localhost:3000/authRedirect.html"
-        trigger="button"
+        trigger="custom"
         filetype="pdf"
         authapihosturl="account.dev.azdev.ezeep.com"
         printapihosturl="printapi.dev.azdev.ezeep.com"
@@ -44,8 +57,8 @@
       <div class="ezp-panel">
         <div class="ezp-logo">
           <img
-            src="https://localhost:3000/assets/logo-32.png"
-            srcset="https://localhost:3000/assets/logo-32.png 1x, https://localhost:3000/assets/logo-32@2x.png 2x"
+            src="https://localhost:3000/assets/logo.png"
+            srcset="https://localhost:3000/assets/logo.png 1x, https://localhost:3000/assets/logo@2x.png 2x"
             alt="ezeep Logo">
         </div>
         <p class="ezp-panel__description ms-fontSize-14" id="subtitle"></p>
