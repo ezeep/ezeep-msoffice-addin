@@ -4,11 +4,11 @@
   <Version>1.0.0.0</Version>
   <ProviderName>Ezeep</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Print with ezeep blue">
-    <Override Locale="de-DE" Value="Drucken mit ezeep blue"/>
+  <DisplayName DefaultValue="Print with ezeep Blue">
+    <Override Locale="de-DE" Value="Drucken mit ezeep Blue"/>
   </DisplayName>
-  <Description DefaultValue="Print with ezeep blue">
-    <Override Locale="de-DE" Value="Drucken mit ezeep blue"/>
+  <Description DefaultValue="Print">
+    <Override Locale="de-DE" Value="Drucken"/>
   </Description>
   <IconUrl DefaultValue="https://localhost:3000/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-64.png"/>
@@ -76,22 +76,22 @@
         <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GetStarted.Title" DefaultValue="Print Now with ezeep blue!">
-          <bt:Override Locale="de-DE" Value="Jetzt drucken mit ezeep blue!"/>
+        <bt:String id="GetStarted.Title" DefaultValue="Print Now with ezeep Blue!">
+          <bt:Override Locale="de-DE" Value="Jetzt drucken mit ezeep Blue!"/>
         </bt:String>
-        <bt:String id="CommandsGroup.Label" DefaultValue="ezeep blue Printing">
-          <bt:Override Locale="de-DE" Value="Drucken mit ezeep blue"/>
-        </bt:String>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Print">
+        <bt:String id="CommandsGroup.Label" DefaultValue="Print">
           <bt:Override Locale="de-DE" Value="Drucken"/>
+        </bt:String>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="ezeep Blue">
+          <bt:Override Locale="de-DE" Value="ezeep Blue"/>
         </bt:String>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="GetStarted.Description" DefaultValue="Print now with ezeep loaded succesfully. Click the 'Print Now' button to get started.">
-          <bt:Override Locale="de-DE" Value="Drucken mit ezeep blue geladen. Klicken Sie auf den 'Drucken'-Button, um loszulegen."/>
+        <bt:String id="GetStarted.Description" DefaultValue="Print now with ezeep Blue loaded succesfully. Click the 'Print Now' button to get started.">
+          <bt:Override Locale="de-DE" Value="Drucken mit ezeep Blue geladen. Klicken Sie auf den 'Drucken'-Button, um loszulegen."/>
         </bt:String>
-        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to Print Now with ezeep!">
-          <bt:Override Locale="de-DE" Value="Klicken Sie hier, um jetzt mit ezeep zu drucken!"/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to Print Now with ezeep Blue!">
+          <bt:Override Locale="de-DE" Value="Klicken Sie hier, um jetzt mit ezeep Blue zu drucken!"/>
         </bt:String>
       </bt:LongStrings>
     </Resources>

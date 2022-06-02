@@ -29,6 +29,7 @@ Office.onReady(async (info) => {
   authSection = document.querySelector("#authSection");
   printBtn = document.querySelector("#printBtn");
   continueSection = document.querySelector("#continueSection");
+  continueSection.style.display = "none";
 
   printBtn.onclick = async () => await ezpPrinting.open();
   authSection.style.display = "block";
@@ -46,7 +47,6 @@ Office.onReady(async (info) => {
       if (authorized) {
         authSection.style.display = "none";
         printingSection.style.display = "block";
-        continueSection.style.display = "none";
       } else {
         printingSection.style.display = "none";
         authSection.style.display = "block";
