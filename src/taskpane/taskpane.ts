@@ -18,6 +18,7 @@ let authSection: HTMLDivElement;
 let fileData: any;
 let language: string;
 let printBtn: HTMLButtonElement;
+let continueSection: HTMLDivElement;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let file: File;
@@ -27,6 +28,7 @@ Office.onReady(async (info) => {
   authBtn = document.querySelector("#authButton");
   authSection = document.querySelector("#authSection");
   printBtn = document.querySelector("#printBtn");
+  continueSection = document.querySelector("#continueSection");
 
   printBtn.onclick = async () => await ezpPrinting.open();
   authSection.style.display = "block";
@@ -44,6 +46,7 @@ Office.onReady(async (info) => {
       if (authorized) {
         authSection.style.display = "none";
         printingSection.style.display = "block";
+        continueSection.style.display = "none";
       } else {
         printingSection.style.display = "none";
         authSection.style.display = "block";
