@@ -3,6 +3,17 @@
  * See LICENSE in the project root for license information.
  */
 
+body {
+  --ezp-printerSelection-width: auto;
+  --ezp-printerSelection-height: 100%;
+  --ezp-printerSelection-footer-rows: auto auto;
+  --ezp-printerSelection-footer-columns: 200px;
+  --ezp-printerSelection-footer-areas: 'print' 'cancel';
+
+  display: grid;
+  grid-template: 1fr / 1fr;
+}
+
  html,
  body {
      width: 100%;
@@ -97,6 +108,15 @@ b {
   --ezp-core-shade-secondary: rgba(139, 139, 139, 0.16);
   --ezp-core-shade-tertiary: rgba(139, 139, 139, 0.22);
   --ezp-core-shadow: rgba(0, 0, 0, 0.15);
+}
+
+/**
+ * Printing section
+ */
+
+#printingSection {
+  display: grid;
+  grid-template: auto 1fr / 1fr;
 }
 
 /**
