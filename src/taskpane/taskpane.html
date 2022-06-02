@@ -18,7 +18,7 @@
     <!-- For more information on Fluent UI, visit https://developer.microsoft.com/fluentui#/. -->
     <link
       rel="stylesheet"
-      href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"
+      href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/11.0.0/css/fabric.min.css"
     />
 
     <!-- Template styles -->
@@ -40,19 +40,24 @@
       </ezp-printing>
     </div>
 
-    <div id="authSection">
-      <img src="https://localhost:3000/assets/icon-80.png" alt="ezeep logo" />
-      <div class="ms-welcome__info">
-        <p class="ms-welcome__subTitle" id="subtitle"></p>
+    <div id="authSection" class="ezp-wrap">
+      <div class="ezp-panel">
+        <div class="ezp-logo">
+          <img
+            src="https://localhost:3000/assets/logo-32.png"
+            srcset="https://localhost:3000/assets/logo-32.png 1x, https://localhost:3000/assets/logo-32@2x.png 2x"
+            alt="ezeep Logo">
+        </div>
+        <p class="ezp-panel__description ms-fontSize-14" id="subtitle"></p>
+        <div class="ezp-panel__actions">
+          <button role="button" id="authButton" class="ezp-button ezp-button--primary">
+            <span id="signInDesc" class="ms-fontSize-14 ms-fontWeight-semibold">Create Account</span>
+          </button>
+          <a role="button" class="ezp-button ezp-button--secondary" target="_blank" href="https://ezeep.com">
+            <span id="createAccDesc" class="ms-fontSize-14 ms-fontWeight-semibold"></span>
+          </a>
+        </div>
       </div>
-
-      <div role="button" id="authButton" class="ms-welcome__action ms-Button ms-Button--hero ms-font-xl">
-        <span class="ms-Button-label" id="signInDesc"></span>
-      </div>
-
-      <p id="or"></p>
-      <a id="createAccDesc" target="_blank" href="https://ezeep.com"></a>
-      <hr style="opacity: 0.5" />
     </div>
 
     <p id="message"></p>
