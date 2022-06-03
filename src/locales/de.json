@@ -1,7 +1,7 @@
 {
     "subtitle": "",
     "signIn": "Anmelden",
-    "printButton": "Hier klicken, um zu drucken",
-    "createAccount": "Account erstellen",
-    "continue": "Fortfahren"
+    "printButton": "Dokument drucken",
+    "createAccount": "Registrieren",
+    "continue": "Drucken"
 }
