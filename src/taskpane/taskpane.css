@@ -1,106 +1,15 @@
-/*
- * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
- * See LICENSE in the project root for license information.
- */
-
-body {
-  --ezp-printerSelection-width: auto;
-  --ezp-printerSelection-height: 100%;
-  --ezp-printerSelection-footer-rows: auto auto;
-  --ezp-printerSelection-footer-columns: 100%;
-  --ezp-printerSelection-footer-areas: 'print' 'cancel';
-
-  display: grid;
-  grid-template: 1fr / 1fr;
-}
-
- html,
- body {
-     width: 100%;
-     height: 100%;
-     margin: 0;
-     padding: 0;
- }
-
- ul {
-     margin: 0;
-     padding: 0;
- }
-
- /*.ms-welcome__header {
-    padding: 20px;
-    padding-bottom: 30px;
-    padding-top: 100px;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    align-items: center;
- }
-
- .ms-welcome__main {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    -webkit-flex-wrap: nowrap;
-    flex-wrap: nowrap;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-flex: 1 0 0;
-    flex: 1 0 0;
-    padding: 10px 20px;
- }
-
- .ms-welcome__main > h2 {
-     width: 100%;
-     text-align: center;
- }
-
- .ms-welcome__features {
-     list-style-type: none;
-     margin-top: 20px;
- }
-
- .ms-welcome__features.ms-List .ms-ListItem {
-     padding-bottom: 20px;
-     display: -webkit-flex;
-     display: flex;
- }
-
- .ms-welcome__features.ms-List .ms-ListItem > .ms-Icon {
-     margin-right: 10px;
- }
-
- .ms-welcome__action.ms-Button--hero {
-     margin-top: 30px;
- }
-
-.ms-Button.ms-Button--hero .ms-Button-label {
-  color: #0078d7;
-}
-
-.ms-Button.ms-Button--hero:hover .ms-Button-label,
-.ms-Button.ms-Button--hero:focus .ms-Button-label{
-  color: #005a9e;
-  cursor: pointer;
-}
-
-b {
-    font-weight: bold;
-}
-
-.flexbox {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}*/
-
 /**
  * Custom properties
  */
 
 :root {
+  --ezp-printerSelection-width: auto;
+  --ezp-printerSelection-height: 100%;
+  --ezp-printerSelection-padding: 16px;
+  --ezp-printerSelection-footer-rows: auto auto;
+  --ezp-printerSelection-footer-columns: 100%;
+  --ezp-printerSelection-footer-areas: 'print' 'cancel';
+
   --ezp-brand-solid-primary: rgba(0, 145, 180, 1);
   --ezp-brand-solid-secondary: rgba(32, 155, 191, 1);
   --ezp-brand-solid-tertiary: rgba(0, 128, 160, 1);
@@ -108,6 +17,25 @@ b {
   --ezp-core-shade-secondary: rgba(139, 139, 139, 0.16);
   --ezp-core-shade-tertiary: rgba(139, 139, 139, 0.22);
   --ezp-core-shadow: rgba(0, 0, 0, 0.15);
+  --ezp-core-outline: rgba(99, 99, 99, 0.16);
+}
+
+/**
+ * Base
+ */
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: grid;
+  grid-template: 1fr / 1fr;
+  box-shadow: inset 0 1px 0 0 var(--ezp-core-outline);
 }
 
 /**
@@ -123,7 +51,13 @@ b {
  * Panel
  */
 .ezp-wrap {
-  padding: 0 16px;
+}
+
+/**
+ * Box
+ */
+.ezp-box {
+  padding: 16px;
 }
 
 /**
@@ -166,7 +100,7 @@ b {
  */
 .ezp-logo {
   height: 20px;
-  margin: 8px 0;
+/*  margin: 8px 0;*/
 }
 
 .ezp-logo > img {
@@ -177,21 +111,18 @@ b {
 }
 
 /**
- * Rocket
+ * Hero
  */
 
-.ezp-rocket {
-  width: 128px;
-  height: 152px;
-  display: flex;
-  justify-content: flex-end;
-  margin: 16px 0 0;
+.ezp-hero {
+  margin: -16px -16px 0;
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
 }
 
-.ezp-rocket > img {
-  margin: 0;
-  width: 160px;
-  height: 160px;
+.ezp-hero > img {
+  width: 100%;
+  height: auto;
 }
 
 /**
