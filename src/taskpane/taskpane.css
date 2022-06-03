@@ -5,7 +5,7 @@
 :root {
   --ezp-printerSelection-width: auto;
   --ezp-printerSelection-height: 100%;
-  --ezp-printerSelection-padding: 16px;
+  --ezp-printerSelection-padding: 16px 16px 70px;
   --ezp-printerSelection-footer-rows: auto auto;
   --ezp-printerSelection-footer-columns: 100%;
   --ezp-printerSelection-footer-areas: 'print' 'cancel';
@@ -44,13 +44,14 @@ body {
 
 #printingSection {
   display: grid;
-  grid-template: 1fr / 1fr;
+  grid-template: 1fr / 1fr auto;
 }
 
 /**
  * Panel
  */
 .ezp-wrap {
+  position: relative;
 }
 
 /**
@@ -126,6 +127,24 @@ body {
 }
 
 /**
+ * Footer
+ */
+
+.ezp-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 54px;
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template: auto / 1fr;
+  align-items: center;
+  box-shadow: 0 -1px 0 0 var(--ezp-core-outline);
+}
+
+/**
  * Button
  */
 .ezp-button {
@@ -176,4 +195,16 @@ body {
 
 .ezp-button--secondary:active {
   background: var(--ezp-core-shade-tertiary);
+}
+
+.ezp-button--tertiary {
+  color: var(--ezp-brand-solid-primary);
+}
+
+.ezp-button--tertiary:hover {
+  background: var(--ezp-core-shade-primary);
+}
+
+.ezp-button--tertiary:active {
+  background: var(--ezp-core-shade-secondary);
 }

@@ -182,6 +182,7 @@ function translate() {
   document.getElementById("subtitle").innerText = i18next.t("subtitle");
   document.getElementById("createAccDesc").innerText = i18next.t("createAccount");
   document.getElementById("printBtnLabel").innerText = i18next.t("continue");
+  document.getElementById("logoutBtnLabel").innerText = i18next.t("logout");
 }
 
 const handlePrintFinished = () => {
