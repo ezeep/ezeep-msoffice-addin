@@ -19,6 +19,7 @@ let fileData: any;
 let language: string;
 let printBtn: HTMLButtonElement;
 let continueSection: HTMLDivElement;
+let logOutBtn: HTMLButtonElement;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let file: File;
@@ -29,6 +30,7 @@ Office.onReady(async (info) => {
   authSection = document.querySelector("#authSection");
   printBtn = document.querySelector("#printBtn");
   continueSection = document.querySelector("#continueSection");
+  logOutBtn = document.querySelector("#logoutBtn");
   continueSection.style.display = "none";
   authSection.style.display = "block";
   printingSection.style.display = "none";
@@ -36,7 +38,8 @@ Office.onReady(async (info) => {
   window.addEventListener("printFinished", handlePrintFinished);
 
   printBtn.onclick = openPrinterSelection;
-  authBtn.addEventListener("click", openAuthDialog);
+  logOutBtn.onclick = logOut;
+  authBtn.onclick = openAuthDialog;
 
   language = Office.context.displayLanguage.toLowerCase();
   await initi18n(language);
@@ -191,5 +194,11 @@ const handlePrintFinished = () => {
 
 const openPrinterSelection = async () => {
   continueSection.style.display = "none";
-  getFile();
+  await getFile();
+};
+
+const logOut = async () => {
+  await ezpPrinting.logOut();
+  printingSection.style.display = "none";
+  authSection.style.display = "block";
 };
