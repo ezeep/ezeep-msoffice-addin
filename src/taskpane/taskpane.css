@@ -7,7 +7,7 @@ body {
   --ezp-printerSelection-width: auto;
   --ezp-printerSelection-height: 100%;
   --ezp-printerSelection-footer-rows: auto auto;
-  --ezp-printerSelection-footer-columns: 200px;
+  --ezp-printerSelection-footer-columns: 100%;
   --ezp-printerSelection-footer-areas: 'print' 'cancel';
 
   display: grid;
