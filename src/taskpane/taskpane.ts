@@ -29,10 +29,13 @@ Office.onReady(async (info) => {
   authSection = document.querySelector("#authSection");
   printBtn = document.querySelector("#printBtn");
   continueSection = document.querySelector("#continueSection");
-
-  printBtn.onclick = async () => await ezpPrinting.open();
+  continueSection.style.display = "none";
   authSection.style.display = "block";
   printingSection.style.display = "none";
+
+  window.addEventListener("printFinished", handlePrintFinished);
+
+  printBtn.onclick = openPrinterSelection;
   authBtn.addEventListener("click", openAuthDialog);
 
   language = Office.context.displayLanguage.toLowerCase();
@@ -46,7 +49,6 @@ Office.onReady(async (info) => {
       if (authorized) {
         authSection.style.display = "none";
         printingSection.style.display = "block";
-        continueSection.style.display = "none";
       } else {
         printingSection.style.display = "none";
         authSection.style.display = "block";
@@ -181,3 +183,12 @@ function translate() {
   document.getElementById("createAccDesc").innerText = i18next.t("createAccount");
   document.getElementById("printBtnLabel").innerText = i18next.t("continue");
 }
+
+const handlePrintFinished = () => {
+  continueSection.style.display = "block";
+};
+
+const openPrinterSelection = async () => {
+  continueSection.style.display = "none";
+  getFile();
+};
