@@ -180,7 +180,7 @@ async function initi18n(language?: string) {
 }
 
 function translate() {
-  document.getElementById("printBtnDesc").innerText = i18next.t("printButtonDescription");
+  // document.getElementById("printBtnDesc").innerText = i18next.t("printButtonDescription");
   document.getElementById("signInDesc").innerText = i18next.t("signIn");
   document.getElementById("subtitle").innerText = i18next.t("subtitle");
   document.getElementById("createAccDesc").innerText = i18next.t("createAccount");

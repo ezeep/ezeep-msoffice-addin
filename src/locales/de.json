@@ -3,5 +3,6 @@
     "signIn": "Anmelden",
     "printButton": "Dokument drucken",
     "createAccount": "Registrieren",
-    "continue": "Drucken"
+    "continue": "Drucken",
+    "logout": "Abmelden"
 }
