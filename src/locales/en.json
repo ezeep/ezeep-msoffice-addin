@@ -1,8 +1,7 @@
 {
-    "subtitle": "Bring the power of ezeep printing to Microsoft Office.",
-    "signIn": "Sign In",
-    "printButtonDescription": "ezeep Blue enables easy and secure printing from any device to any printer.",
-    "createAccount": "Create Account",
-    "continue": "Continue",
-    "logout": "Logout"
+    "subtitle": "ezeep Blue let's you print out your Microsoft Office documents with any device, direct from the app.",
+    "signIn": "Log In",
+    "printButton": "Print Document",
+    "createAccount": "Sign Up",
+    "continue": "Print"
 }

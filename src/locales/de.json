@@ -1,8 +1,7 @@
 {
-    "subtitle": "",
+    "subtitle": "Mit ezeep Blue können Sie Ihre Microsoft Office Dokumente mit jedem Gerät direkt aus der App heraus drucken.",
     "signIn": "Anmelden",
-    "printButtonDescription": "Hier klicken, um zu drucken",
-    "createAccount": "Account erstellen",
-    "continue": "Fortfahren",
-    "logout": "Abmelden"
+    "printButton": "Dokument drucken",
+    "createAccount": "Registrieren",
+    "continue": "Drucken"
 }
