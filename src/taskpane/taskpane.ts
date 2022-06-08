@@ -35,10 +35,12 @@ Office.onReady(async (info) => {
   authSection.style.display = "block";
   printingSection.style.display = "none";
 
+  // eslint-disable-next-line no-undef
   window.addEventListener("printFinished", handlePrintFinished);
 
   printBtn.onclick = openPrinterSelection;
   logOutBtn.onclick = logOut;
+
   authBtn.onclick = openAuthDialog;
 
   language = Office.context.displayLanguage.toLowerCase();

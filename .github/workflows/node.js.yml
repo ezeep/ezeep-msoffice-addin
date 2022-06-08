@@ -3,10 +3,12 @@
 
 name: Node.js CI
 
+env:
+  DIST_PATH: 'dist'
+  ARTIFACT_NAME: 'office-add-in'
+
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
 
 jobs:
@@ -28,3 +30,9 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: '${{ env.DIST_PATH }}'
