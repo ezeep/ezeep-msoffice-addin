@@ -20,6 +20,7 @@ let language: string;
 let printBtn: HTMLButtonElement;
 let continueSection: HTMLDivElement;
 let logOutBtn: HTMLButtonElement;
+let loadingSection: HTMLDivElement;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let file: File;
@@ -31,8 +32,10 @@ Office.onReady(async (info) => {
   printBtn = document.querySelector("#printBtn");
   continueSection = document.querySelector("#continueSection");
   logOutBtn = document.querySelector("#logoutBtn");
+  loadingSection = document.querySelector("#loading");
+
   continueSection.style.display = "none";
-  authSection.style.display = "block";
+  authSection.style.display = "none";
   printingSection.style.display = "none";
 
   // eslint-disable-next-line no-undef
@@ -49,14 +52,17 @@ Office.onReady(async (info) => {
 
   if (info.host === Office.HostType.Word) {
     authorized = await ezpPrinting.checkAuth();
+    authSection.style.display = authorized ? "none" : "block";
 
     getFile().then(() => {
       if (authorized) {
         authSection.style.display = "none";
         printingSection.style.display = "block";
+        loadingSection.style.display = "none";
       } else {
         printingSection.style.display = "none";
         authSection.style.display = "block";
+        loadingSection.style.display = "none";
       }
     });
   }
@@ -132,13 +138,17 @@ async function onGotAllSlices(docdataSlices) {
   const filestring = filearray.toString();
   ezpPrinting.setAttribute("filedata", filestring);
   ezpPrinting.setAttribute("filename", "test.pdf");
-  if (authorized) ezpPrinting.open();
+  if (authorized) ezpPrinting.open().then(() => (loadingSection.style.display = "none"));
 }
 
 async function openAuthDialog() {
   const authUri = await ezpPrinting.getAuthUri();
   // open office dialog
   Office.context.ui.displayDialogAsync(authUri, { height: 300, width: 300, promptBeforeOpen: false }, (result) => {
+    if (result.status === Office.AsyncResultStatus.Failed) {
+      // eslint-disable-next-line no-undef
+      console.log(`Error: ${result.error.message}`);
+    }
     const dialog = result.value;
     // process message from the dialog
     dialog.addEventHandler(Office.EventType.DialogMessageReceived, (arg: any) => {
@@ -196,11 +206,12 @@ const handlePrintFinished = () => {
 
 const openPrinterSelection = async () => {
   continueSection.style.display = "none";
+  loadingSection.style.display = "";
   await getFile();
 };
 
 const logOut = async () => {
-  await ezpPrinting.logOut();
+  await ezpPrinting.logOutandRevokeToken();
   printingSection.style.display = "none";
   authSection.style.display = "block";
 };

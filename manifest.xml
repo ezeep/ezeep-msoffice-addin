@@ -15,6 +15,8 @@
   <SupportUrl DefaultValue="https://support.ezeep.com"/>
   <AppDomains>
     <AppDomain>https://account.dev.azdev.ezeep.com</AppDomain>
+    <AppDomain>https://account.tst.azdev.ezeep.com</AppDomain>
+    <AppDomain>https://account.ezeep.com</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Document"/>

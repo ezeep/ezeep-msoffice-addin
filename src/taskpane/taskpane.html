@@ -26,6 +26,9 @@
   </head>
 
   <body class="ms-font-m ms-welcome__main ms-Fabric">
+    <div id="loading" class="center ezp-wrap">
+      <div class="loader"></div>
+    </div>
     <div id="printingSection" class="ezp-wrap ezp-wrap--separated">
       <div id="continueSection" class="ezp-box">
         <div class="ezp-panel">
@@ -33,13 +36,15 @@
             <img
               src="https://localhost:3000/assets/hero.png"
               srcset="https://localhost:3000/assets/hero.png 1x, https://localhost:3000/assets/hero@2x.png 2x"
-              alt="ezeep Hero">
+              alt="ezeep Hero"
+            />
           </div>
           <div class="ezp-logo">
             <img
               src="https://localhost:3000/assets/logo.png"
               srcset="https://localhost:3000/assets/logo.png 1x, https://localhost:3000/assets/logo@2x.png 2x"
-              alt="ezeep Logo">
+              alt="ezeep Logo"
+            />
           </div>
           <!-- <p id="printBtnDesc" class="ezp-panel__description ms-fontSize-14"></p> -->
           <div class="ezp-panel__actions">
@@ -49,13 +54,14 @@
           </div>
         </div>
       </div>
+      <!-- live client 9I9DPCHGvsXjraQfwuRzL7OlVpqiryJ19yfYLeLH-->
       <ezp-printing
-        clientid="9I9DPCHGvsXjraQfwuRzL7OlVpqiryJ19yfYLeLH"
+        clientid="dp8gisibeh5xoNkeZewjBQqjPaUUgAEP8MUlvbT8"
         redirecturi="https://localhost:3000/authRedirect.html"
         trigger="custom"
         filetype="pdf"
-        authapihosturl="account.dev.azdev.ezeep.com"
-        printapihosturl="printapi.dev.azdev.ezeep.com"
+        authapihosturl="account.tst.azdev.ezeep.com"
+        printapihosturl="printapi.tst.azdev.ezeep.com"
         appearance="light"
         seamless
         hideheader
@@ -75,20 +81,27 @@
             <img
               src="https://localhost:3000/assets/hero.png"
               srcset="https://localhost:3000/assets/hero.png 1x, https://localhost:3000/assets/hero@2x.png 2x"
-              alt="ezeep Hero">
+              alt="ezeep Hero"
+            />
           </div>
           <div class="ezp-logo">
             <img
               src="https://localhost:3000/assets/logo.png"
               srcset="https://localhost:3000/assets/logo.png 1x, https://localhost:3000/assets/logo@2x.png 2x"
-              alt="ezeep Logo">
+              alt="ezeep Logo"
+            />
           </div>
           <p class="ezp-panel__description ms-fontSize-14" id="subtitle"></p>
           <div class="ezp-panel__actions">
             <button role="button" id="authButton" class="ezp-button ezp-button--primary">
               <span id="signInDesc" class="ms-fontSize-14 ms-fontWeight-semibold"></span>
             </button>
-            <a role="button" class="ezp-button ezp-button--secondary" target="_blank" href="https://account.ezeep.com/auth/signup/">
+            <a
+              role="button"
+              class="ezp-button ezp-button--secondary"
+              target="_blank"
+              href="https://account.ezeep.com/auth/signup/"
+            >
               <span id="createAccDesc" class="ms-fontSize-14 ms-fontWeight-semibold"></span>
             </a>
           </div>
