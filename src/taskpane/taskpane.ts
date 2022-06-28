@@ -68,16 +68,12 @@ Office.onReady(async (info) => {
   }
 });
 
-function showMessage(message) {
-  const messageElement = document.getElementById("message");
-  messageElement.innerText = message;
-}
-
 export async function getFile() {
   //Get the current file
   Office.context.document.getFileAsync(Office.FileType.Pdf, async (asyncResult: Office.AsyncResult<Office.File>) => {
     if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-      showMessage("Error: " + asyncResult.error.message);
+      // eslint-disable-next-line no-undef
+      console.error("Error: " + asyncResult.error.message);
     } else {
       //Get the file
       const file = asyncResult.value;
@@ -123,7 +119,8 @@ async function getSliceAsync(
     } else {
       gotAllSlices = false;
       file.closeAsync();
-      showMessage(`getSliceAsync Error:${sliceResult.error.message}`);
+      // eslint-disable-next-line no-undef
+      console.error(`getSliceAsync Error:${sliceResult.error.message}`);
     }
   });
 }
@@ -157,6 +154,7 @@ async function openAuthDialog() {
       printingSection.style.display = "block";
       authSection.style.display = "none";
       ezpPrinting.open();
+      authorized = true;
     });
   });
 }
@@ -214,4 +212,12 @@ const logOut = async () => {
   await ezpPrinting.logOutandRevokeToken();
   printingSection.style.display = "none";
   authSection.style.display = "block";
+};
+
+const toggleSection = (section: HTMLElement) => {
+  if (section.style.display === "none") {
+    section.style.display = "";
+  } else {
+    section.style.display = "none";
+  }
 };
