@@ -69,6 +69,22 @@ jobs:
             -s "artifacts" \
             -o none
 
+    - name: Purge CDN endpoint
+      run: |
+           azenv='${{ secrets.AZURE_ENVIRONMENT }}'
+           resourceGroup=$(jq -crM .resourceGroup <<< $azenv)
+           profile=$(jq -crM .cdn.profileName <<< $azenv)
+           endpoint=$(jq -crM .cdn.endpoint.name <<< $azenv)
+           container=$(jq -crM .storage.container <<< $azenv)
+
+           az cdn endpoint purge \
+             -g $resourceGroup \
+             --profile-name $profile \
+             -n $endpoint \
+             --content-paths "/$container/*" \
+             --no-wait \
+             -o none
+
     - name: Azure CLI logout
       run: |
         az logout
