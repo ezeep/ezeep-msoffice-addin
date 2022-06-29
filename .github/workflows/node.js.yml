@@ -30,11 +30,12 @@ jobs:
     - run: npm ci
     - run: npm run build
 
-    - name: Upload artifact
+    - name: Upload artifact (directory)
       uses: actions/upload-artifact@v2
       with:
         name: ${{ env.ARTIFACT_NAME }}
         path: '${{ env.DIST_PATH }}'
+        if-no-files-found: error
 
     - name: Zip artifact for release
       uses: thedoctor0/zip-release@master
@@ -42,17 +43,18 @@ jobs:
         type: 'zip'
         directory: ${{ env.DIST_PATH }}
         path: '.'
-        filename: ${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
+        filename: ../${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
 
     - name: list directory
       run: |
-        ls -lR
+        ls -l
 
-    - name: Upload artifact
+    - name: Upload artifact (zip file)
       uses: actions/upload-artifact@v2
       with:
         name: ${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
-        path: '${{ env.DIST_PATH }}'
+        path: ${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
+        if-no-files-found: error
 
     - name: Create release
       uses: ncipollo/release-action@v1
