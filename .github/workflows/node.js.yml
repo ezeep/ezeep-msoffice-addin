@@ -33,24 +33,6 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ env.ARTIFACT_NAME }}
-        path: '${{ env.DIST_PATH }}'
-
-    - name: Zip artifact for release
-      uses: thedoctor0/zip-release@master
-      with:
-        type: 'zip'
-        directory: ${{ env.DIST_PATH }}
-        path: '.'
-        filename: ${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
-
-    - name: list directory
-      run: |
-        ls -lR
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
-      with:
         name: ${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
         path: '${{ env.DIST_PATH }}'
 
