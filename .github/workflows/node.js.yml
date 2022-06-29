@@ -45,10 +45,6 @@ jobs:
         path: '.'
         filename: ../${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
 
-    - name: list directory
-      run: |
-        ls -l
-
     - name: Upload artifact (zip file)
       uses: actions/upload-artifact@v2
       with:
