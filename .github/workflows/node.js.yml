@@ -44,11 +44,15 @@ jobs:
         path: '.'
         filename: ${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
 
+    - name: list directory
+      run: |
+        ls -lR
+
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
         name: ${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
-        path: ${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
+        path: '${{ env.DIST_PATH }}'
 
     - name: Create release
       uses: ncipollo/release-action@v1
@@ -70,9 +74,6 @@ jobs:
         name: ${{ env.ARTIFACT_NAME }}
         path: "artifacts/v${{ env.MODULE_VERSION }}"
 
-    - name: list directory
-      run: |
-        ls -lR
 
     - name: Login to Azure CLI
       uses: azure/login@v1
