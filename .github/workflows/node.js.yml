@@ -42,14 +42,14 @@ jobs:
         type: 'zip'
         directory: ${{ env.DIST_PATH }}
         path: '.'
-        filename: ${{ env.ARTIFACT_NAME }}
+        filename: ${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
 
-    - name: Create release with npm package
+    - name: Create release
       uses: ncipollo/release-action@v1
       with:
         tag: "${{ env.MODULE_VERSION }}"
         prerelease: ${{ env.PRERELEASE }}
-        artifacts: "${{ env.DIST_PATH }}/${{ env.ARTIFACT_NAME }}"
+        artifacts: ${{ env.ARTIFACT_NAME }}-${{ env.MODULE_VERSION }}.zip
         token: ${{ secrets.GITHUB_TOKEN }}
 
   cdn-upload:
