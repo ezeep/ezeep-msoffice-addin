@@ -213,11 +213,3 @@ const logOut = async () => {
   printingSection.style.display = "none";
   authSection.style.display = "block";
 };
-
-const toggleSection = (section: HTMLElement) => {
-  if (section.style.display === "none") {
-    section.style.display = "";
-  } else {
-    section.style.display = "none";
-  }
-};
