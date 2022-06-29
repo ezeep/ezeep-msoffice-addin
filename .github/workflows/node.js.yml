@@ -3,6 +3,7 @@ name: Node.js CI
 env:
   DIST_PATH: 'dist'
   ARTIFACT_NAME: 'ezeep Blue office-add-in'
+  MODULE_VERSION: '1.0.${{ github.run_number }}'   # update MAJOR and MINOR version here
 
 on:
   push:
@@ -33,7 +34,7 @@ jobs:
         name: ${{ env.ARTIFACT_NAME }}
         path: '${{ env.DIST_PATH }}'
 
-  cdn-upload-npm:
+  cdn-upload:
     environment: Production
     needs: build
     runs-on: ubuntu-latest
