@@ -3,10 +3,12 @@ name: Node.js CI
 env:
   DIST_PATH: 'dist'
   ARTIFACT_NAME: 'ezeep Blue office-add-in'
+  MODULE_VERSION: '1.0.${{ github.run_number }}'   # update MAJOR and MINOR version here
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main","feature/publish" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -33,7 +35,7 @@ jobs:
         name: ${{ env.ARTIFACT_NAME }}
         path: '${{ env.DIST_PATH }}'
 
-  cdn-upload-npm:
+  cdn-upload:
     environment: Production
     needs: build
     runs-on: ubuntu-latest
@@ -66,6 +68,22 @@ jobs:
             -d $container \
             -s "artifacts" \
             -o none
+
+    - name: Purge CDN endpoint
+      run: |
+           azenv='${{ secrets.AZURE_ENVIRONMENT }}'
+           resourceGroup=$(jq -crM .resourceGroup <<< $azenv)
+           profile=$(jq -crM .cdn.profileName <<< $azenv)
+           endpoint=$(jq -crM .cdn.endpoint.name <<< $azenv)
+           container=$(jq -crM .storage.container <<< $azenv)
+
+           az cdn endpoint purge \
+             -g $resourceGroup \
+             --profile-name $profile \
+             -n $endpoint \
+             --content-paths "/$container/*" \
+             --no-wait \
+             -o none
 
     - name: Azure CLI logout
       run: |
