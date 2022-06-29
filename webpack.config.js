@@ -79,7 +79,9 @@ module.exports = async (env, options) => {
               if (dev) {
                 return content;
               } else {
-                return content.toString().replace(new RegExp(urlDev, "g"), urlProd + "v" + env.version + "/");
+                return content
+                  .toString()
+                  .replace(new RegExp(urlDev, "g"), urlProd + "v" + process.env.MODULE_VERSION + "/");
               }
             },
           },
