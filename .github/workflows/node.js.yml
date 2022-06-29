@@ -32,3 +32,44 @@ jobs:
       with:
         name: ${{ env.ARTIFACT_NAME }}
         path: '${{ env.DIST_PATH }}'
+
+  cdn-upload-npm:
+    environment: Production
+    needs: build-npm
+    runs-on: ubuntu-latest
+    steps:
+ 
+    - name: Download npm artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: "artifacts/v${{ env.MODULE_VERSION }}"
+    
+    - name: list directory
+      run: |
+        ls -lR
+
+    - name: Login to Azure CLI
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Upload artifact to blob storage
+      run: |
+          azenv='${{ secrets.AZURE_ENVIRONMENT }}'
+          account=$(jq -crM .storage.account <<< $azenv)
+          container=$(jq -crM .storage.container <<< $azenv)
+
+          az storage blob upload-batch \
+            --auth-mode login \
+            --account-name $account \
+            -d $container \
+            -s "artifacts" \
+            -o none
+
+    - name: Azure CLI logout
+      run: |
+        az logout
+        az cache purge
+        az account clear
+      if: always()
