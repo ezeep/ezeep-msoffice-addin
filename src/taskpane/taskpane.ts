@@ -49,11 +49,14 @@ Office.onReady(async (info) => {
   language = Office.context.displayLanguage.toLowerCase();
   await initi18n(language);
   translate();
+  authorized = await ezpPrinting.checkAuth();
+  authSection.style.display = authorized ? "none" : "block";
 
-  if (info.host === Office.HostType.Word) {
-    authorized = await ezpPrinting.checkAuth();
-    authSection.style.display = authorized ? "none" : "block";
-
+  if (
+    info.host === Office.HostType.Word ||
+    info.host === Office.HostType.Excel ||
+    info.host === Office.HostType.PowerPoint
+  ) {
     getFile().then(() => {
       if (authorized) {
         authSection.style.display = "none";
@@ -65,6 +68,8 @@ Office.onReady(async (info) => {
         loadingSection.style.display = "none";
       }
     });
+  } else if (info.host === Office.HostType.Outlook) {
+    // get email file
   }
 });
 
@@ -133,6 +138,7 @@ async function onGotAllSlices(docdataSlices) {
   fileData = docdata;
   const filearray = new Uint8Array(fileData);
   const filestring = filearray.toString();
+  // console.log(filestring);
   ezpPrinting.setAttribute("filedata", filestring);
   ezpPrinting.setAttribute("filename", "test.pdf");
   if (authorized) ezpPrinting.open().then(() => (loadingSection.style.display = "none"));
