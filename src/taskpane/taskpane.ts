@@ -21,6 +21,7 @@ let printBtn: HTMLButtonElement;
 let continueSection: HTMLDivElement;
 let logOutBtn: HTMLButtonElement;
 let loadingSection: HTMLDivElement;
+let iesection: HTMLDivElement;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let file: File;
@@ -33,43 +34,61 @@ Office.onReady(async (info) => {
   continueSection = document.querySelector("#continueSection");
   logOutBtn = document.querySelector("#logoutBtn");
   loadingSection = document.querySelector("#loading");
+  iesection = document.querySelector("#iesection");
 
+  iesection.style.display = "none";
   continueSection.style.display = "none";
   authSection.style.display = "none";
   printingSection.style.display = "none";
 
   // eslint-disable-next-line no-undef
-  window.addEventListener("printFinished", handlePrintFinished);
+  if (navigator.userAgent.indexOf("Trident") === -1) {
+    // IE is not the browser. Provide a full-featured version of the add-in here.
+    // eslint-disable-next-line no-undef
+    window.addEventListener("printFinished", handlePrintFinished);
 
-  printBtn.onclick = openPrinterSelection;
-  logOutBtn.onclick = logOut;
+    printBtn.onclick = openPrinterSelection;
+    logOutBtn.onclick = logOut;
 
-  authBtn.onclick = openAuthDialog;
+    authBtn.onclick = openAuthDialog;
 
-  language = Office.context.displayLanguage.toLowerCase();
-  await initi18n(language);
-  translate();
-  authorized = await ezpPrinting.checkAuth();
-  authSection.style.display = authorized ? "none" : "block";
+    language = Office.context.displayLanguage.toLowerCase();
+    ezpPrinting.setAttribute("language", language.slice(0, 2));
 
-  if (
-    info.host === Office.HostType.Word ||
-    info.host === Office.HostType.Excel ||
-    info.host === Office.HostType.PowerPoint
-  ) {
-    getFile().then(() => {
-      if (authorized) {
-        authSection.style.display = "none";
-        printingSection.style.display = "block";
-        loadingSection.style.display = "none";
-      } else {
-        printingSection.style.display = "none";
-        authSection.style.display = "block";
-        loadingSection.style.display = "none";
-      }
-    });
-  } else if (info.host === Office.HostType.Outlook) {
-    // get email file
+    await initi18n(language);
+    translate();
+    authorized = await ezpPrinting.checkAuth();
+    authSection.style.display = authorized ? "none" : "block";
+
+    if (
+      info.host === Office.HostType.Word ||
+      info.host === Office.HostType.Excel ||
+      info.host === Office.HostType.PowerPoint
+    ) {
+      getFile().then(() => {
+        if (authorized) {
+          authSection.style.display = "none";
+          printingSection.style.display = "block";
+          loadingSection.style.display = "none";
+        } else {
+          printingSection.style.display = "none";
+          authSection.style.display = "block";
+          loadingSection.style.display = "none";
+        }
+      });
+    } else if (info.host === Office.HostType.Outlook) {
+      // get email file
+    }
+  } else {
+    // IE is the browser. So here, do one of the following:
+    //  1. Provide an alternate experience that does not use any of the HTML5
+    //     features that are not supported in IE.
+    //  2. Enable the add-in to gracefully fail by putting a message in the UI that
+    //     says something similar to:
+    //      "This add-in won't run in your version of Office. Please upgrade to
+    //      either one-time purchase Office 2021 or to a Microsoft 365 account."
+    loadingSection.style.display = "none";
+    iesection.style.display = "block";
   }
 });
 
