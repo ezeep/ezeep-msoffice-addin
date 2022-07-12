@@ -42,7 +42,7 @@ Office.onReady(async (info) => {
   printingSection.style.display = "none";
 
   // eslint-disable-next-line no-undef
-  if (navigator.userAgent.indexOf("Trident") === -1) {
+  if (navigator.userAgent.indexOf("Trident") === -1 || navigator.userAgent.indexOf("Edge/") > -1) {
     // IE is not the browser. Provide a full-featured version of the add-in here.
     // eslint-disable-next-line no-undef
     window.addEventListener("printFinished", handlePrintFinished);
