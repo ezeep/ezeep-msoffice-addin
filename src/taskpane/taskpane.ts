@@ -33,9 +33,8 @@ Office.onReady(async (info) => {
   iesection = document.querySelector("#iesection");
   loadingSection = document.querySelector("#loading");
 
+  // is legacy edge or ie?
   if (navigator.userAgent.indexOf("Trident") > -1 || navigator.userAgent.indexOf("Edge") > -1) {
-    console.log("achtung veraltete software detektiert!");
-    // window.location.replace("/warning");
     loadingSection.style.display = "none";
     continueSection.style.display = "none";
     authSection.style.display = "none";
