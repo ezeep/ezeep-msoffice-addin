@@ -9,7 +9,7 @@ const urlProd = "https://cdn.ezeep.com/ezeep-msoffice-addin/"; // CHANGE THIS TO
 
 async function getHttpsOptions() {
   const httpsOptions = await devCerts.getHttpsServerOptions();
-  return { cacert: httpsOptions.ca, key: httpsOptions.key, cert: httpsOptions.cert };
+  return { ca: httpsOptions.ca, key: httpsOptions.key, cert: httpsOptions.cert };
 }
 
 module.exports = async (env, options) => {
