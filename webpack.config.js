@@ -49,7 +49,19 @@ module.exports = async (env, options) => {
         {
           test: /\.html$/,
           exclude: /node_modules/,
-          use: "html-loader",
+          loader: "html-loader",
+          options: {
+            preprocessor: (content, loaderContext) => {
+              const { resourcePath } = loaderContext;
+              if (dev) {
+                return content;
+              } else {
+                if (resourcePath.includes("taskpane")) {
+                  return content.replace(new RegExp(urlDev, "g"), `${urlProd}v${process.env.MODULE_VERSION}/`);
+                }
+              }
+            },
+          },
         },
         {
           test: /\.(png|jpg|jpeg|gif|ico)$/,
@@ -100,8 +112,11 @@ module.exports = async (env, options) => {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      https: env.WEBPACK_BUILD || options.https !== undefined ? options.https : await getHttpsOptions(),
-      port: process.env.npm_package_config_dev_server_port || 3000,
+      server: {
+        type: "https",
+        options: env.WEBPACK_BUILD || options.https !== undefined ? options.https : await getHttpsOptions(),
+      },
+      port: 3000,
     },
   };
 
