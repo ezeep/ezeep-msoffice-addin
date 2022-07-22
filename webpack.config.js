@@ -53,13 +53,12 @@ module.exports = async (env, options) => {
           options: {
             preprocessor: (content, loaderContext) => {
               const { resourcePath } = loaderContext;
-              if (dev) {
-                return content;
-              } else {
+              if (!dev) {
                 if (resourcePath.includes("taskpane")) {
                   return content.replace(new RegExp(urlDev, "g"), `${urlProd}v${process.env.MODULE_VERSION}/`);
                 }
               }
+              return content;
             },
           },
         },
