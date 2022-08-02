@@ -152,12 +152,31 @@ async function onGotAllSlices(docdataSlices) {
     docdata = docdata.concat(docdataSlices[i]);
   }
   fileData = docdata;
-  const filearray = new Uint8Array(fileData);
-  const filestring = filearray.toString();
-  // console.log(filestring);
-  ezpPrinting.setAttribute("filedata", filestring);
-  ezpPrinting.setAttribute("filename", "test.pdf");
-  if (authorized) ezpPrinting.open().then(() => (loadingSection.style.display = "none"));
+  let filearray = new Uint8Array(fileData);
+  let reader = new FileReader();
+  let filestring: string | ArrayBuffer;
+  reader.onload = () => {
+    filestring = reader.result;
+    console.log("filestring in taskpane:");
+    console.log(filestring);
+    ezpPrinting.setAttribute("filedata", filestring);
+    ezpPrinting.setAttribute("filename", "test.pdf");
+    if (authorized) ezpPrinting.open().then(() => (loadingSection.style.display = "none"));
+    // delete filestring from memory
+    fileData = null;
+    filearray = null;
+    filestring = null;
+  };
+
+  // read filedata as binary string
+  reader.readAsBinaryString(new Blob([filearray]));
+  // write to file
+  // const blob = new Blob([filearray], { type: "application/pdf" });
+  // const url = URL.createObjectURL(blob);
+  // const a = document.createElement("a");
+  // a.href = url;
+  // a.download = "test.pdf";
+  // a.click();
 }
 
 async function openAuthDialog() {
