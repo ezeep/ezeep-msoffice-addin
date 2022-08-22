@@ -157,8 +157,7 @@ async function onGotAllSlices(docdataSlices) {
   let filestring: string | ArrayBuffer;
   reader.onload = () => {
     filestring = reader.result;
-    console.log("filestring in taskpane:");
-    console.log(filestring);
+
     ezpPrinting.setAttribute("filedata", filestring);
     ezpPrinting.setAttribute("filename", "test.pdf");
     if (authorized) ezpPrinting.open().then(() => (loadingSection.style.display = "none"));
