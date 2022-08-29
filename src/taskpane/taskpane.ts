@@ -23,6 +23,7 @@ let continueSection: HTMLDivElement;
 let logOutBtn: HTMLButtonElement;
 let loadingSection: HTMLDivElement;
 let iesection: HTMLDivElement;
+let noDataSection: HTMLDivElement;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let file: File;
@@ -32,6 +33,7 @@ Office.onReady(async (info) => {
   continueSection = document.querySelector("#continueSection");
   iesection = document.querySelector("#iesection");
   loadingSection = document.querySelector("#loading");
+  noDataSection = document.querySelector("#noDataSection");
 
   // is legacy edge or ie?
   if (navigator.userAgent.indexOf("Trident") > -1 || navigator.userAgent.indexOf("Edge") > -1) {
@@ -51,6 +53,7 @@ Office.onReady(async (info) => {
   continueSection.style.display = "none";
   authSection.style.display = "none";
   printingSection.style.display = "none";
+  noDataSection.style.display = "none";
 
   // eslint-disable-next-line no-undef
   window.addEventListener("printFinished", handlePrintFinished);
@@ -68,20 +71,47 @@ Office.onReady(async (info) => {
   authorized = await ezpPrinting.checkAuth();
   authSection.style.display = authorized ? "none" : "block";
 
-  if (
-    info.host === Office.HostType.Word ||
-    info.host === Office.HostType.Excel ||
-    info.host === Office.HostType.PowerPoint
-  ) {
+  if (info.host === Office.HostType.Word) {
     getFile().then(() => {
       if (authorized) {
+        noDataSection.style.display = "none";
         authSection.style.display = "none";
         printingSection.style.display = "block";
         loadingSection.style.display = "none";
       } else {
+        noDataSection.style.display = "none";
         printingSection.style.display = "none";
         authSection.style.display = "block";
         loadingSection.style.display = "none";
+      }
+    });
+  } else if (info.host === Office.HostType.Excel) {
+    await Excel.run(async (context) => {
+      const sheet = context.workbook.worksheets.getActiveWorksheet();
+      const range = sheet.getUsedRange();
+      sheet.load("name");
+      range.load(["address", "values"]);
+      await context.sync();
+
+      if (range.address === `${sheet.name}!A1` && range.values[0][0] === "") {
+        // no data in sheet
+        noDataSection.style.display = "block";
+        loadingSection.style.display = "none";
+        authSection.style.display = "none";
+      } else {
+        getFile().then(() => {
+          if (authorized) {
+            noDataSection.style.display = "none";
+            authSection.style.display = "none";
+            printingSection.style.display = "block";
+            loadingSection.style.display = "none";
+          } else {
+            noDataSection.style.display = "none";
+            printingSection.style.display = "none";
+            authSection.style.display = "block";
+            loadingSection.style.display = "none";
+          }
+        });
       }
     });
   } else if (info.host === Office.HostType.Outlook) {
@@ -236,6 +266,8 @@ function translate() {
   document.getElementById("createAccDesc").innerText = i18next.t("createAccount");
   document.getElementById("printBtnLabel").innerText = i18next.t("continue");
   document.getElementById("logoutBtnLabel").innerText = i18next.t("logout");
+  document.getElementById("iesection").innerText = i18next.t("ieDeprecationWarning");
+  document.getElementById("noDataSection").innerText = i18next.t("noData");
 }
 
 const handlePrintFinished = () => {
