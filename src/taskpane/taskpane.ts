@@ -39,12 +39,6 @@ Office.onReady(async (info) => {
   printBtn = document.querySelector("#printBtn");
   logOutBtn = document.querySelector("#logoutBtn");
 
-  language = Office.context.displayLanguage.toLowerCase();
-  ezpPrinting.setAttribute("language", language.slice(0, 2));
-
-  await initi18n(language);
-  translate();
-
   // is legacy edge or ie?
   if (navigator.userAgent.indexOf("Trident") > -1 || navigator.userAgent.indexOf("Edge") > -1) {
     loadingSection.style.display = "none";
@@ -55,6 +49,12 @@ Office.onReady(async (info) => {
     iesection.style.display = "block";
     return;
   }
+
+  language = Office.context.displayLanguage.toLowerCase();
+  ezpPrinting.setAttribute("language", language.slice(0, 2));
+
+  await initi18n(language);
+  translate();
 
   iesection.style.display = "none";
   continueSection.style.display = "none";
