@@ -4,5 +4,7 @@
     "printButton": "Dokument drucken",
     "createAccount": "Registrieren",
     "continue": "Drucken",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "ieDeprecationWarning": "Diese Version von Microsoft Office wird nicht mehr unterstützt. Bitte aktualisieren Sie Ihr Microsoft Office.",
+    "noData": "Keine Daten gefunden! Bitte schließen sie das ezeep Blue Add-in, fügen Sie etwas zum Dokument hinzu und versuchen Sie es erneut."
 }

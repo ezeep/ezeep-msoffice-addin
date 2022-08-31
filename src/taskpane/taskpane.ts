@@ -34,6 +34,16 @@ Office.onReady(async (info) => {
   iesection = document.querySelector("#iesection");
   loadingSection = document.querySelector("#loading");
   noDataSection = document.querySelector("#noDataSection");
+  ezpPrinting = document.querySelector("ezp-printing");
+  authBtn = document.querySelector("#authButton");
+  printBtn = document.querySelector("#printBtn");
+  logOutBtn = document.querySelector("#logoutBtn");
+
+  language = Office.context.displayLanguage.toLowerCase();
+  ezpPrinting.setAttribute("language", language.slice(0, 2));
+
+  await initi18n(language);
+  translate();
 
   // is legacy edge or ie?
   if (navigator.userAgent.indexOf("Trident") > -1 || navigator.userAgent.indexOf("Edge") > -1) {
@@ -41,14 +51,10 @@ Office.onReady(async (info) => {
     continueSection.style.display = "none";
     authSection.style.display = "none";
     printingSection.style.display = "none";
+    noDataSection.style.display = "none";
     iesection.style.display = "block";
     return;
   }
-
-  ezpPrinting = document.querySelector("ezp-printing");
-  authBtn = document.querySelector("#authButton");
-  printBtn = document.querySelector("#printBtn");
-  logOutBtn = document.querySelector("#logoutBtn");
   iesection.style.display = "none";
   continueSection.style.display = "none";
   authSection.style.display = "none";
@@ -63,11 +69,6 @@ Office.onReady(async (info) => {
 
   authBtn.onclick = openAuthDialog;
 
-  language = Office.context.displayLanguage.toLowerCase();
-  ezpPrinting.setAttribute("language", language.slice(0, 2));
-
-  await initi18n(language);
-  translate();
   authorized = await ezpPrinting.checkAuth();
   authSection.style.display = authorized ? "none" : "block";
 
@@ -199,13 +200,6 @@ async function onGotAllSlices(docdataSlices) {
 
   // read filedata as binary string
   reader.readAsBinaryString(new Blob([filearray]));
-  // write to file
-  // const blob = new Blob([filearray], { type: "application/pdf" });
-  // const url = URL.createObjectURL(blob);
-  // const a = document.createElement("a");
-  // a.href = url;
-  // a.download = "test.pdf";
-  // a.click();
 }
 
 async function openAuthDialog() {
