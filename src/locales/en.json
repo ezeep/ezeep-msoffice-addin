@@ -5,6 +5,5 @@
     "createAccount": "Sign Up",
     "continue": "Print",
     "logout": "Log Out",
-    "ieDeprecationWarning": "This Add-in won't run in your version of Office. Please upgrade.",
     "noData": "No data in sheet! Please close the ezeep Blue Add-in, add something and save before opening the ezeep Blue Add-in again."
 }

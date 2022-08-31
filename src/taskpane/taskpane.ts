@@ -55,6 +55,7 @@ Office.onReady(async (info) => {
     iesection.style.display = "block";
     return;
   }
+
   iesection.style.display = "none";
   continueSection.style.display = "none";
   authSection.style.display = "none";
@@ -254,13 +255,11 @@ async function initi18n(language?: string) {
 }
 
 function translate() {
-  // document.getElementById("printBtnDesc").innerText = i18next.t("printButtonDescription");
   document.getElementById("signInDesc").innerText = i18next.t("signIn");
   document.getElementById("subtitle").innerText = i18next.t("subtitle");
   document.getElementById("createAccDesc").innerText = i18next.t("createAccount");
   document.getElementById("printBtnLabel").innerText = i18next.t("continue");
   document.getElementById("logoutBtnLabel").innerText = i18next.t("logout");
-  document.getElementById("iesection").innerText = i18next.t("ieDeprecationWarning");
   document.getElementById("noDataSection").innerText = i18next.t("noData");
 }
 
