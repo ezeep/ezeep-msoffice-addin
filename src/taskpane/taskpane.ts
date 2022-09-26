@@ -24,6 +24,8 @@ let logOutBtn: HTMLButtonElement;
 let loadingSection: HTMLDivElement;
 let iesection: HTMLDivElement;
 let noDataSection: HTMLDivElement;
+let host: string;
+let filename: any;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let file: File;
@@ -74,6 +76,8 @@ Office.onReady(async (info) => {
   authSection.style.display = authorized ? "none" : "block";
 
   if (info.host === Office.HostType.Word) {
+    host = "Word";
+    filename = await loadFileName();
     getFile().then(() => {
       if (authorized) {
         noDataSection.style.display = "none";
@@ -88,6 +92,8 @@ Office.onReady(async (info) => {
       }
     });
   } else if (info.host === Office.HostType.Excel) {
+    host = "Excel";
+    filename = await loadFileName();
     await Excel.run(async (context) => {
       const sheet = context.workbook.worksheets.getActiveWorksheet();
       const range = sheet.getUsedRange();
@@ -191,7 +197,13 @@ async function onGotAllSlices(docdataSlices) {
     filestring = reader.result;
 
     ezpPrinting.setAttribute("filedata", filestring);
-    ezpPrinting.setAttribute("filename", "test.pdf");
+    if (filename) {
+      ezpPrinting.setAttribute("filename", filename);
+    } else {
+      const generatedFilename = `${host}-${new Date().toLocaleString(language)}.pdf`;
+      console.log(generatedFilename);
+      ezpPrinting.setAttribute("filename", generatedFilename);
+    }
     if (authorized) ezpPrinting.open().then(() => (loadingSection.style.display = "none"));
     // delete filestring from memory
     fileData = null;
@@ -277,4 +289,16 @@ const logOut = async () => {
   await ezpPrinting.logOutandRevokeToken();
   printingSection.style.display = "none";
   authSection.style.display = "block";
+};
+
+const loadFileName = async () => {
+  return new Promise((resolve) => {
+    Office.context.document.getFilePropertiesAsync(null, (res) => {
+      if (res && res.value && res.value.url) {
+        let name = res.value.url.substring(res.value.url.lastIndexOf("\\") + 1);
+        resolve(name);
+      }
+      resolve("");
+    });
+  });
 };
