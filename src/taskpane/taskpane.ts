@@ -7,8 +7,6 @@ import translationsDE from "../locales/de.json";
 import translationsEN from "../locales/en.json";
 import i18next from "i18next";
 
-/* global console, customElements, document, navigator, window, Excel, Office */
-
 type Section = "loading" | "auth" | "printing" | "noData" | "ie" | "error";
 
 // How long to wait for the ezeep-js web component to register before giving up.
@@ -84,7 +82,8 @@ async function init(info: { host: Office.HostType; platform: Office.PlatformType
   });
   document.querySelector<HTMLButtonElement>("#printBtn").onclick = () => runGuarded(preparePrint);
   document.querySelector<HTMLButtonElement>("#logoutBtn").onclick = () => runGuarded(logOut);
-  document.querySelector<HTMLButtonElement>("#authButton").onclick = () => runGuarded(openAuthDialog);
+  document.querySelector<HTMLButtonElement>("#authButton").onclick = () =>
+    runGuarded(openAuthDialog);
 
   authorized = await ezpPrinting.checkAuth();
   filename = await loadFileName();
@@ -123,17 +122,21 @@ async function preparePrint() {
 /** Promise wrapper around getFileAsync that reads every slice and always closes the file. */
 function getPdfBytes(): Promise<Uint8Array> {
   return new Promise((resolve, reject) => {
-    Office.context.document.getFileAsync(Office.FileType.Pdf, { sliceSize: SLICE_SIZE }, (result) => {
-      if (result.status !== Office.AsyncResultStatus.Succeeded) {
-        reject(new Error(`getFileAsync failed: ${result.error.code} ${result.error.message}`));
-        return;
+    Office.context.document.getFileAsync(
+      Office.FileType.Pdf,
+      { sliceSize: SLICE_SIZE },
+      (result) => {
+        if (result.status !== Office.AsyncResultStatus.Succeeded) {
+          reject(new Error(`getFileAsync failed: ${result.error.code} ${result.error.message}`));
+          return;
+        }
+        const file = result.value;
+        readAllSlices(file).then(
+          (bytes) => file.closeAsync(() => resolve(bytes)),
+          (error) => file.closeAsync(() => reject(error))
+        );
       }
-      const file = result.value;
-      readAllSlices(file).then(
-        (bytes) => file.closeAsync(() => resolve(bytes)),
-        (error) => file.closeAsync(() => reject(error))
-      );
-    });
+    );
   });
 }
 
@@ -154,7 +157,9 @@ function getSlice(file: Office.File, index: number): Promise<number[]> {
       if (result.status === Office.AsyncResultStatus.Succeeded) {
         resolve(result.value.data);
       } else {
-        reject(new Error(`getSliceAsync(${index}) failed: ${result.error.code} ${result.error.message}`));
+        reject(
+          new Error(`getSliceAsync(${index}) failed: ${result.error.code} ${result.error.message}`)
+        );
       }
     });
   });
@@ -244,7 +249,10 @@ async function isActiveSheetEmpty(): Promise<boolean> {
 function loadFileName(): Promise<string> {
   return new Promise((resolve) => {
     Office.context.document.getFilePropertiesAsync((result) => {
-      const url = result.status === Office.AsyncResultStatus.Succeeded && result.value ? result.value.url : "";
+      const url =
+        result.status === Office.AsyncResultStatus.Succeeded && result.value
+          ? result.value.url
+          : "";
       if (!url) {
         resolve("");
         return;

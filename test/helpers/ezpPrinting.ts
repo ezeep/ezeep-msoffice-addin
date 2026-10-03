@@ -1,12 +1,11 @@
-/* global jest, customElements, HTMLElement */
-
 /**
  * Fake of the <ezp-printing> web component from ezeep-js. Only the methods and
  * properties the add-in uses are implemented. Every property write is recorded in
  * `ezp.writes`, so tests can assert on ordering (filename before filedata).
  */
 
-export const AUTH_URI = "https://account.ezeep.com/oauth/authorize/?client_id=test&code_challenge=abc";
+export const AUTH_URI =
+  "https://account.ezeep.com/oauth/authorize/?client_id=test&code_challenge=abc";
 
 type Write = [property: string, value: unknown];
 

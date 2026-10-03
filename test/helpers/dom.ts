@@ -1,9 +1,10 @@
-/* global document, jest, window */
-
 import fs from "fs";
 import path from "path";
 
-const taskpaneHtml = fs.readFileSync(path.join(__dirname, "../../src/taskpane/taskpane.html"), "utf8");
+const taskpaneHtml = fs.readFileSync(
+  path.join(__dirname, "../../src/taskpane/taskpane.html"),
+  "utf8"
+);
 
 /** Puts the real task pane markup (without its <script> tags) into the jsdom document. */
 export function loadTaskpaneDom() {
@@ -33,9 +34,14 @@ export function isVisible(selector: string): boolean {
 
 /** Which of the top-level task pane sections are currently shown. */
 export function visibleSections(): string[] {
-  return ["#loading", "#authSection", "#printingSection", "#noDataSection", "#iesection", "#errorSection"].filter(
-    isVisible
-  );
+  return [
+    "#loading",
+    "#authSection",
+    "#printingSection",
+    "#noDataSection",
+    "#iesection",
+    "#errorSection",
+  ].filter(isVisible);
 }
 
 export function errorText(): string {

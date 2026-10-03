@@ -1,11 +1,14 @@
-/* global jest */
-
 /**
  * Minimal fake of the Office.js surface the add-in uses. Callbacks are delivered
  * asynchronously (microtasks), like the real API, so ordering bugs still show up.
  */
 
-export const HostType = { Word: "Word", Excel: "Excel", PowerPoint: "PowerPoint", Outlook: "Outlook" };
+export const HostType = {
+  Word: "Word",
+  Excel: "Excel",
+  PowerPoint: "PowerPoint",
+  Outlook: "Outlook",
+};
 export const PlatformType = { PC: "PC", Mac: "Mac", OfficeOnline: "OfficeOnline" };
 const FileType = { Compressed: "compressed", Pdf: "pdf", Text: "text" };
 const AsyncResultStatus = { Succeeded: "succeeded", Failed: "failed" };
@@ -62,7 +65,10 @@ export function installOfficeMock(options: OfficeMockOptions = {}): OfficeMock {
   const getSliceAsync = jest.fn((index: number, callback: (result: unknown) => void) =>
     later(() => {
       if (index === options.sliceFailsAt) {
-        callback({ status: AsyncResultStatus.Failed, error: { code: 5001, message: "Internal Error" } });
+        callback({
+          status: AsyncResultStatus.Failed,
+          error: { code: 5001, message: "Internal Error" },
+        });
         return;
       }
       const data = Array.from(pdf.subarray(index * sliceSize, (index + 1) * sliceSize));
@@ -70,17 +76,26 @@ export function installOfficeMock(options: OfficeMockOptions = {}): OfficeMock {
     })
   );
 
-  const getFileAsync = jest.fn((_type: string, _opts: unknown, callback: (result: unknown) => void) =>
-    later(() => {
-      if (options.getFileFails) {
-        callback({ status: AsyncResultStatus.Failed, error: { code: 5001, message: "Internal Error" } });
-        return;
-      }
-      callback({
-        status: AsyncResultStatus.Succeeded,
-        value: { size: pdf.length, sliceCount: Math.ceil(pdf.length / sliceSize), getSliceAsync, closeAsync },
-      });
-    })
+  const getFileAsync = jest.fn(
+    (_type: string, _opts: unknown, callback: (result: unknown) => void) =>
+      later(() => {
+        if (options.getFileFails) {
+          callback({
+            status: AsyncResultStatus.Failed,
+            error: { code: 5001, message: "Internal Error" },
+          });
+          return;
+        }
+        callback({
+          status: AsyncResultStatus.Succeeded,
+          value: {
+            size: pdf.length,
+            sliceCount: Math.ceil(pdf.length / sliceSize),
+            getSliceAsync,
+            closeAsync,
+          },
+        });
+      })
   );
 
   const dialog = {
@@ -95,17 +110,18 @@ export function installOfficeMock(options: OfficeMockOptions = {}): OfficeMock {
     },
   };
 
-  const displayDialogAsync = jest.fn((_url: string, _opts: unknown, callback: (result: unknown) => void) =>
-    later(() => {
-      if (options.dialogFailsWith) {
-        callback({
-          status: AsyncResultStatus.Failed,
-          error: { code: options.dialogFailsWith, message: "Dialog failed" },
-        });
-        return;
-      }
-      callback({ status: AsyncResultStatus.Succeeded, value: dialog });
-    })
+  const displayDialogAsync = jest.fn(
+    (_url: string, _opts: unknown, callback: (result: unknown) => void) =>
+      later(() => {
+        if (options.dialogFailsWith) {
+          callback({
+            status: AsyncResultStatus.Failed,
+            error: { code: options.dialogFailsWith, message: "Dialog failed" },
+          });
+          return;
+        }
+        callback({ status: AsyncResultStatus.Succeeded, value: dialog });
+      })
   );
 
   const messageParent = jest.fn();
@@ -125,7 +141,9 @@ export function installOfficeMock(options: OfficeMockOptions = {}): OfficeMock {
       document: {
         getFileAsync,
         getFilePropertiesAsync: jest.fn((callback: (result: unknown) => void) =>
-          later(() => callback({ status: AsyncResultStatus.Succeeded, value: { url: options.fileUrl ?? "" } }))
+          later(() =>
+            callback({ status: AsyncResultStatus.Succeeded, value: { url: options.fileUrl ?? "" } })
+          )
         ),
       },
       ui: { displayDialogAsync, messageParent },

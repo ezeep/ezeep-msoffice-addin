@@ -27,7 +27,7 @@ npm run lint
 
 ### CI
 
-`.github/workflows/test.yml` runs lint, type check, tests with coverage and the production build on every pull request, on Node 18 like the release build. The coverage report is attached to the run as an artifact.
+`.github/workflows/test.yml` runs lint, type check, tests with coverage and the production build on every pull request, on Node 22 like the release build. The coverage report is attached to the run as an artifact.
 
 This workflow never deploys. `node.js.yml` (build, release, CDN upload) still only runs on push to `main`.
 
@@ -111,7 +111,7 @@ That is what the manual test below is for.
 
 ### Prerequisites
 
-- Node.js 18+ and `npm ci` in a checkout of the branch under test.
+- Node.js 22.15+ (required by webpack-dev-server 6) and `npm ci` in a checkout of the branch under test.
 - Trusted dev certificates for `https://localhost:3000`: `npx office-addin-dev-certs install`. On first use this asks to trust a local CA.
 - Word and Excel desktop (Windows and/or Mac) and a Microsoft 365 account for Office on the web.
 - An ezeep Blue **test account** and a **test or virtual printer**, so test prints don't go to a real printer.

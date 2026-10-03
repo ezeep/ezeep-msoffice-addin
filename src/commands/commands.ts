@@ -3,8 +3,6 @@
  * See LICENSE in the project root for license information.
  */
 
-/* global Office */
-
 // Function file referenced by <FunctionFile> in the manifest. The ribbon button only
 // opens the task pane (ShowTaskpane), so no command functions are registered here.
 Office.onReady(() => {
