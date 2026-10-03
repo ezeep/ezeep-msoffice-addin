@@ -6,3 +6,6 @@ node_modules/
 
 # vs code stuff
 .vscode/
+
+# Jest coverage output
+coverage/
