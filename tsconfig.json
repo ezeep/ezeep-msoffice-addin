@@ -19,9 +19,11 @@
     "node_modules",
     "dist",
     "lib",
-    "lib-amd"
+    "lib-amd",
+    "test",
+    "jest.config.js"
   ],
-  "ts-node": { 
-    "files": true 
+  "ts-node": {
+    "files": true
   }
 }
