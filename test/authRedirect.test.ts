@@ -1,5 +1,3 @@
-/* global describe, test, expect, beforeEach, jest, URLSearchParams */
-
 import { installOfficeMock, OfficeMock } from "./helpers/office";
 
 let office: OfficeMock;
@@ -49,7 +47,10 @@ describe("start page (?authUri=...)", () => {
   test("does not forward anywhere else", () => {
     const navigate = jest.fn();
 
-    authRedirect.handleAuthRedirect(`?authUri=${encodeURIComponent("https://evil.example.com/")}`, navigate);
+    authRedirect.handleAuthRedirect(
+      `?authUri=${encodeURIComponent("https://evil.example.com/")}`,
+      navigate
+    );
 
     expect(navigate).not.toHaveBeenCalled();
     expect(office.messageParent).not.toHaveBeenCalled();
@@ -83,6 +84,8 @@ describe("redirect target (?code=... / ?error=...)", () => {
   });
 
   test("resultMessage matches what the task pane parses", () => {
-    expect(JSON.parse(authRedirect.resultMessage(new URLSearchParams("code=c1")))).toEqual({ code: "c1" });
+    expect(JSON.parse(authRedirect.resultMessage(new URLSearchParams("code=c1")))).toEqual({
+      code: "c1",
+    });
   });
 });

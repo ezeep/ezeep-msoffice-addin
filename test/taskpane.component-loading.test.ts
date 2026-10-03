@@ -1,9 +1,13 @@
-/* global describe, test, expect, beforeEach, afterEach, jest */
-
 import en from "../src/locales/en.json";
 import { defineFakeEzpPrinting, ezp } from "./helpers/ezpPrinting";
 import { HostType, installOfficeMock, PlatformType } from "./helpers/office";
-import { errorText, loadTaskpaneDom, loadTaskpaneModule, settle, visibleSections } from "./helpers/dom";
+import {
+  errorText,
+  loadTaskpaneDom,
+  loadTaskpaneModule,
+  settle,
+  visibleSections,
+} from "./helpers/dom";
 
 // The ezeep-js loader registers <ezp-printing> asynchronously, so Office.onReady can run
 // before the element exists. These tests start with the element *not* defined.

@@ -4,6 +4,8 @@ This is a Microsoft Office add-in which integrates [ezeep.js](https://github.com
 
 ## Development
 
+Requires Node.js 22.15 or later (see `.nvmrc`).
+
 ```bash
 npm ci
 npm run start:desktop   # sideload into Word desktop with a local dev server

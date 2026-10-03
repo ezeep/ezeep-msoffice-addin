@@ -1,8 +1,12 @@
-/* global describe, test, expect, beforeAll, beforeEach, afterEach, jest, document, navigator, window, Event */
-
 import en from "../src/locales/en.json";
 import { AUTH_URI, defineFakeEzpPrinting, ezp } from "./helpers/ezpPrinting";
-import { HostType, installOfficeMock, OfficeMock, OfficeMockOptions, PlatformType } from "./helpers/office";
+import {
+  HostType,
+  installOfficeMock,
+  OfficeMock,
+  OfficeMockOptions,
+  PlatformType,
+} from "./helpers/office";
 import {
   binaryString,
   click,
@@ -49,7 +53,11 @@ describe("start-up", () => {
     await startTaskpane(WORD_DESKTOP, { fileUrl: "C:\\Users\\bernd\\Documents\\Report.docx" });
 
     expect(visibleSections()).toEqual(["#printingSection"]);
-    expect(office.getFileAsync).toHaveBeenCalledWith("pdf", { sliceSize: 4194304 }, expect.any(Function));
+    expect(office.getFileAsync).toHaveBeenCalledWith(
+      "pdf",
+      { sliceSize: 4194304 },
+      expect.any(Function)
+    );
     expect(ezp.values.filename).toBe("Report.docx");
     expect(ezp.open).toHaveBeenCalledTimes(1);
   });
@@ -98,7 +106,9 @@ describe("start-up", () => {
   test("legacy Edge / IE webviews show the upgrade notice", async () => {
     jest
       .spyOn(navigator, "userAgent", "get")
-      .mockReturnValue("Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 Chrome/70.0 Safari/537.36 Edge/18.19041");
+      .mockReturnValue(
+        "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 Chrome/70.0 Safari/537.36 Edge/18.19041"
+      );
     await startTaskpane();
 
     expect(visibleSections()).toEqual(["#iesection"]);
@@ -148,7 +158,9 @@ describe("PDF export (getFileAsync)", () => {
     ezp.authorized = true;
     await startTaskpane();
 
-    const order = ezp.writes.map(([property]) => property).filter((p) => p === "filename" || p === "filedata");
+    const order = ezp.writes
+      .map(([property]) => property)
+      .filter((p) => p === "filename" || p === "filedata");
     expect(order[0]).toBe("filename");
   });
 
@@ -163,7 +175,9 @@ describe("PDF export (getFileAsync)", () => {
     ezp.authorized = true;
     await startTaskpane(
       { host: HostType.Excel, platform: PlatformType.OfficeOnline },
-      { fileUrl: "https://contoso.sharepoint.com/sites/x/Shared%20Documents/Q3%20Budget.xlsx?web=1" }
+      {
+        fileUrl: "https://contoso.sharepoint.com/sites/x/Shared%20Documents/Q3%20Budget.xlsx?web=1",
+      }
     );
 
     expect(ezp.values.filename).toBe("Q3 Budget.xlsx");
@@ -213,8 +227,11 @@ describe("printing again", () => {
   test("an export error on reprint shows an error instead of an endless spinner", async () => {
     ezp.authorized = true;
     await startTaskpane();
-    office.getFileAsync.mockImplementationOnce((_t: string, _o: unknown, callback: (r: unknown) => void) =>
-      Promise.resolve().then(() => callback({ status: "failed", error: { code: 5001, message: "Internal Error" } }))
+    office.getFileAsync.mockImplementationOnce(
+      (_t: string, _o: unknown, callback: (r: unknown) => void) =>
+        Promise.resolve().then(() =>
+          callback({ status: "failed", error: { code: 5001, message: "Internal Error" } })
+        )
     );
 
     click("#printBtn");
@@ -247,7 +264,10 @@ describe("sign-in dialog", () => {
   test("a code from the dialog signs in, then exports and opens ezeep printing", async () => {
     await openDialog();
 
-    office.dialog.fire("dialogMessageReceived", { message: JSON.stringify({ code: "auth-code-1" }), origin: "x" });
+    office.dialog.fire("dialogMessageReceived", {
+      message: JSON.stringify({ code: "auth-code-1" }),
+      origin: "x",
+    });
     await settle();
 
     expect(office.dialog.close).toHaveBeenCalled();
@@ -259,7 +279,9 @@ describe("sign-in dialog", () => {
 
   test("clears the single-use code once ezeep reports authSuccess", async () => {
     await openDialog();
-    office.dialog.fire("dialogMessageReceived", { message: JSON.stringify({ code: "auth-code-1" }) });
+    office.dialog.fire("dialogMessageReceived", {
+      message: JSON.stringify({ code: "auth-code-1" }),
+    });
     await settle();
 
     document.querySelector("ezp-printing").dispatchEvent(new Event("authSuccess"));
@@ -270,7 +292,9 @@ describe("sign-in dialog", () => {
   test("an error message from the dialog shows the sign-in failed message", async () => {
     await openDialog();
 
-    office.dialog.fire("dialogMessageReceived", { message: JSON.stringify({ error: "access_denied" }) });
+    office.dialog.fire("dialogMessageReceived", {
+      message: JSON.stringify({ error: "access_denied" }),
+    });
     await settle();
 
     expect(visibleSections()).toEqual(["#errorSection"]);
