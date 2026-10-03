@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 /*
  * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
  * See LICENSE in the project root for license information.
@@ -8,262 +7,307 @@ import translationsDE from "../locales/de.json";
 import translationsEN from "../locales/en.json";
 import i18next from "i18next";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-/* global document, Office, Word */
-// eslint-disable-next-line no-undef
+/* global console, customElements, document, navigator, window, Excel, Office */
+
+type Section = "loading" | "auth" | "printing" | "noData" | "ie" | "error";
+
+// How long to wait for the ezeep-js web component to register before giving up.
+const COMPONENT_TIMEOUT_MS = 15000;
+// Maximum slice size Office allows on Windows, Mac and the web (4 MB).
+const SLICE_SIZE = 4194304;
+
 let ezpPrinting: any;
-let printingSection: HTMLDivElement;
-let authBtn: HTMLButtonElement;
-let authorized: boolean = false;
-let authSection: HTMLDivElement;
-let fileData: any;
-let language: string;
-let printBtn: HTMLButtonElement;
+let sections: Record<Section, HTMLElement>;
 let continueSection: HTMLDivElement;
-let logOutBtn: HTMLButtonElement;
-let loadingSection: HTMLDivElement;
-let iesection: HTMLDivElement;
-let noDataSection: HTMLDivElement;
-let host: string;
-let filename: any;
+let errorMessage: HTMLElement;
+let authorized = false;
+let language = "";
+let host = "";
+let filename = "";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-let file: File;
 Office.onReady(async (info) => {
-  printingSection = document.querySelector("#printingSection");
-  authSection = document.querySelector("#authSection");
-  continueSection = document.querySelector("#continueSection");
-  iesection = document.querySelector("#iesection");
-  loadingSection = document.querySelector("#loading");
-  noDataSection = document.querySelector("#noDataSection");
-  ezpPrinting = document.querySelector("ezp-printing");
-  authBtn = document.querySelector("#authButton");
-  printBtn = document.querySelector("#printBtn");
-  logOutBtn = document.querySelector("#logoutBtn");
-
-  // is legacy edge or ie?
-  if (navigator.userAgent.indexOf("Trident") > -1 || navigator.userAgent.indexOf("Edge") > -1) {
-    loadingSection.style.display = "none";
-    continueSection.style.display = "none";
-    authSection.style.display = "none";
-    printingSection.style.display = "none";
-    noDataSection.style.display = "none";
-    iesection.style.display = "block";
-    return;
-  }
-
-  language = Office.context.displayLanguage.toLowerCase();
-  ezpPrinting.setAttribute("language", language.slice(0, 2));
-
-  await initi18n(language);
-  translate();
-
-  iesection.style.display = "none";
-  continueSection.style.display = "none";
-  authSection.style.display = "none";
-  printingSection.style.display = "none";
-  noDataSection.style.display = "none";
-
-  // eslint-disable-next-line no-undef
-  window.addEventListener("printFinished", handlePrintFinished);
-
-  printBtn.onclick = openPrinterSelection;
-  logOutBtn.onclick = logOut;
-
-  authBtn.onclick = openAuthDialog;
-
-  authorized = await ezpPrinting.checkAuth();
-  authSection.style.display = authorized ? "none" : "block";
-
-  if (info.host === Office.HostType.Word) {
-    host = "Word";
-    filename = await loadFileName();
-    getFile().then(() => {
-      if (authorized) {
-        noDataSection.style.display = "none";
-        authSection.style.display = "none";
-        printingSection.style.display = "block";
-        loadingSection.style.display = "none";
-      } else {
-        noDataSection.style.display = "none";
-        printingSection.style.display = "none";
-        authSection.style.display = "block";
-        loadingSection.style.display = "none";
-      }
-    });
-  } else if (info.host === Office.HostType.Excel) {
-    host = "Excel";
-    filename = await loadFileName();
-    await Excel.run(async (context) => {
-      const sheet = context.workbook.worksheets.getActiveWorksheet();
-      const range = sheet.getUsedRange();
-      sheet.load("name");
-      range.load(["address", "values"]);
-      await context.sync();
-
-      if (range.address === `${sheet.name}!A1` && range.values[0][0] === "") {
-        // no data in sheet
-        noDataSection.style.display = "block";
-        loadingSection.style.display = "none";
-        authSection.style.display = "none";
-      } else {
-        getFile().then(() => {
-          if (authorized) {
-            noDataSection.style.display = "none";
-            authSection.style.display = "none";
-            printingSection.style.display = "block";
-            loadingSection.style.display = "none";
-          } else {
-            noDataSection.style.display = "none";
-            printingSection.style.display = "none";
-            authSection.style.display = "block";
-            loadingSection.style.display = "none";
-          }
-        });
-      }
-    });
-  } else if (info.host === Office.HostType.Outlook) {
-    // get email file
+  try {
+    await init(info);
+  } catch (error) {
+    showError("genericError", error);
   }
 });
 
-export async function getFile() {
-  //Get the current file
-  Office.context.document.getFileAsync(Office.FileType.Pdf, async (asyncResult: Office.AsyncResult<Office.File>) => {
-    if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-      // eslint-disable-next-line no-undef
-      console.error("Error: " + asyncResult.error.message);
-    } else {
-      //Get the file
-      const file = asyncResult.value;
-      let slicesReceived = 0,
-        gotAllSlices = true,
-        docdataSlices = [],
-        sliceCount = file.sliceCount;
+async function init(info: { host: Office.HostType; platform: Office.PlatformType }) {
+  sections = {
+    loading: document.querySelector("#loading"),
+    auth: document.querySelector("#authSection"),
+    printing: document.querySelector("#printingSection"),
+    noData: document.querySelector("#noDataSection"),
+    ie: document.querySelector("#iesection"),
+    error: document.querySelector("#errorSection"),
+  };
+  continueSection = document.querySelector("#continueSection");
+  errorMessage = document.querySelector("#errorMessage");
+  ezpPrinting = document.querySelector("ezp-printing");
 
-      // Get the file slices.
-      await getSliceAsync(file, 0, sliceCount, gotAllSlices, docdataSlices, slicesReceived);
-      file.closeAsync();
-    }
+  // Legacy Edge (EdgeHTML) and Internet Explorer webviews can't run ezeep-js.
+  // Chromium-based Edge reports "Edg/", so it doesn't match "Edge".
+  if (navigator.userAgent.indexOf("Trident") > -1 || navigator.userAgent.indexOf("Edge") > -1) {
+    show("ie");
+    return;
+  }
+
+  language = (Office.context.displayLanguage || "").toLowerCase();
+  await initi18n(language);
+  translate();
+  show("loading");
+
+  if (info.host === Office.HostType.Word) {
+    host = "Word";
+  } else if (info.host === Office.HostType.Excel) {
+    host = "Excel";
+  } else {
+    showError("unsupportedHost");
+    return;
+  }
+
+  // getFileAsync doesn't support any file type in Word on the web, see
+  // https://learn.microsoft.com/javascript/api/office/office.document#office-office-document-getfileasync-member(1)
+  if (info.host === Office.HostType.Word && info.platform === Office.PlatformType.OfficeOnline) {
+    showError("unsupportedWordOnline");
+    return;
+  }
+
+  // The ezeep-js loader registers <ezp-printing> asynchronously, so Office.onReady can
+  // fire before the element is upgraded and its methods exist.
+  await whenDefined("ezp-printing", COMPONENT_TIMEOUT_MS);
+  ezpPrinting.language = language.slice(0, 2);
+
+  window.addEventListener("printFinished", () => {
+    continueSection.style.display = "block";
   });
+  document.querySelector<HTMLButtonElement>("#printBtn").onclick = () => runGuarded(preparePrint);
+  document.querySelector<HTMLButtonElement>("#logoutBtn").onclick = () => runGuarded(logOut);
+  document.querySelector<HTMLButtonElement>("#authButton").onclick = () => runGuarded(openAuthDialog);
+
+  authorized = await ezpPrinting.checkAuth();
+  filename = await loadFileName();
+
+  if (host === "Excel" && (await isActiveSheetEmpty())) {
+    show("noData");
+    return;
+  }
+
+  if (!authorized) {
+    show("auth");
+    return;
+  }
+
+  await preparePrint();
 }
 
-async function getSliceAsync(
-  file: Office.File,
-  nextSlice: number,
-  sliceCount: number,
-  gotAllSlices: boolean,
-  docdataSlices: any[],
-  slicesReceived: number
-) {
-  file.getSliceAsync(nextSlice, async (sliceResult) => {
-    if (sliceResult.status === Office.AsyncResultStatus.Succeeded) {
-      if (!gotAllSlices) {
-        // Failed to get all slices, no need to continue.
+/** Exports the document as PDF, hands it to ezeep-js and opens the print dialog. */
+async function preparePrint() {
+  continueSection.style.display = "none";
+  show("loading");
+
+  const pdf = await getPdfBytes();
+
+  // filename must be set before filedata: ezp-printing builds the File object in its
+  // filedata watcher and reads the filename at that moment.
+  ezpPrinting.filename = filename || `${host}-${new Date().toLocaleString(language)}.pdf`;
+  // Reset first, so printing the same unchanged document again still triggers the watcher.
+  ezpPrinting.filedata = "";
+  ezpPrinting.filedata = toBinaryString(pdf);
+
+  show("printing");
+  await ezpPrinting.open();
+}
+
+/** Promise wrapper around getFileAsync that reads every slice and always closes the file. */
+function getPdfBytes(): Promise<Uint8Array> {
+  return new Promise((resolve, reject) => {
+    Office.context.document.getFileAsync(Office.FileType.Pdf, { sliceSize: SLICE_SIZE }, (result) => {
+      if (result.status !== Office.AsyncResultStatus.Succeeded) {
+        reject(new Error(`getFileAsync failed: ${result.error.code} ${result.error.message}`));
         return;
       }
-
-      // Got one slice, store it in a temporary array.
-      // (Or you can do something else, such as
-      // send it to a third-party server.)
-      docdataSlices[sliceResult.value.index] = sliceResult.value.data;
-      if (++slicesReceived == sliceCount) {
-        // All slices have been received.
-
-        file.closeAsync();
-        await onGotAllSlices(docdataSlices);
-      } else {
-        getSliceAsync(file, ++nextSlice, sliceCount, gotAllSlices, docdataSlices, slicesReceived);
-      }
-    } else {
-      gotAllSlices = false;
-      file.closeAsync();
-      // eslint-disable-next-line no-undef
-      console.error(`getSliceAsync Error:${sliceResult.error.message}`);
-    }
+      const file = result.value;
+      readAllSlices(file).then(
+        (bytes) => file.closeAsync(() => resolve(bytes)),
+        (error) => file.closeAsync(() => reject(error))
+      );
+    });
   });
 }
 
-async function onGotAllSlices(docdataSlices) {
-  var docdata = [];
-  for (var i = 0; i < docdataSlices.length; i++) {
-    docdata = docdata.concat(docdataSlices[i]);
+async function readAllSlices(file: Office.File): Promise<Uint8Array> {
+  const bytes = new Uint8Array(file.size);
+  let offset = 0;
+  for (let index = 0; index < file.sliceCount; index++) {
+    const data = await getSlice(file, index);
+    bytes.set(data, offset);
+    offset += data.length;
   }
-  fileData = docdata;
-  let filearray = new Uint8Array(fileData);
-  let reader = new FileReader();
-  let filestring: string | ArrayBuffer;
-  reader.onload = () => {
-    filestring = reader.result;
+  return offset === bytes.length ? bytes : bytes.subarray(0, offset);
+}
 
-    ezpPrinting.setAttribute("filedata", filestring);
-    if (filename) {
-      ezpPrinting.setAttribute("filename", filename);
-    } else {
-      const generatedFilename = `${host}-${new Date().toLocaleString(language)}.pdf`;
-      console.log(generatedFilename);
-      ezpPrinting.setAttribute("filename", generatedFilename);
-    }
-    if (authorized) ezpPrinting.open().then(() => (loadingSection.style.display = "none"));
-    // delete filestring from memory
-    fileData = null;
-    filearray = null;
-    filestring = null;
-  };
+function getSlice(file: Office.File, index: number): Promise<number[]> {
+  return new Promise((resolve, reject) => {
+    file.getSliceAsync(index, (result) => {
+      if (result.status === Office.AsyncResultStatus.Succeeded) {
+        resolve(result.value.data);
+      } else {
+        reject(new Error(`getSliceAsync(${index}) failed: ${result.error.code} ${result.error.message}`));
+      }
+    });
+  });
+}
 
-  // read filedata as binary string
-  reader.readAsBinaryString(new Blob([filearray]));
+/** ezp-printing expects filedata as a binary string (one char per byte). */
+function toBinaryString(bytes: Uint8Array): string {
+  const chunkSize = 0x8000;
+  let result = "";
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    result += String.fromCharCode.apply(null, Array.prototype.slice.call(bytes, i, i + chunkSize));
+  }
+  return result;
 }
 
 async function openAuthDialog() {
-  const authUri = await ezpPrinting.getAuthUri();
-  // open office dialog
-  Office.context.ui.displayDialogAsync(authUri, { height: 300, width: 300, promptBeforeOpen: false }, (result) => {
-    if (result.status === Office.AsyncResultStatus.Failed) {
-      // eslint-disable-next-line no-undef
-      console.log(`Error: ${result.error.message}`);
+  const authUri: string = await ezpPrinting.getAuthUri();
+
+  // The first page of an Office dialog must be on the add-in's own domain, so the dialog
+  // opens authRedirect.html, which forwards to the ezeep login page.
+  // https://learn.microsoft.com/office/dev/add-ins/develop/dialog-api-in-office-add-ins
+  const startUrl = new URL("authRedirect.html", window.location.href);
+  startUrl.searchParams.set("authUri", authUri);
+
+  Office.context.ui.displayDialogAsync(startUrl.toString(), { height: 60, width: 30 }, (result) => {
+    if (result.status !== Office.AsyncResultStatus.Succeeded) {
+      showError("dialogError", result.error);
+      return;
     }
     const dialog = result.value;
-    // process message from the dialog
-    dialog.addEventHandler(Office.EventType.DialogMessageReceived, (arg: any) => {
-      ezpPrinting.setAttribute("code", arg.message);
+
+    dialog.addEventHandler(Office.EventType.DialogMessageReceived, (arg) => {
+      if (!("message" in arg)) {
+        return;
+      }
       dialog.close();
-      printingSection.style.display = "block";
-      authSection.style.display = "none";
-      ezpPrinting.open();
-      authorized = true;
+      runGuarded(() => handleAuthMessage(arg.message));
+    });
+
+    // 12006: the user closed the dialog. Nothing to do, the sign-in button stays available.
+    dialog.addEventHandler(Office.EventType.DialogEventReceived, (arg) => {
+      if ("error" in arg && arg.error !== 12006) {
+        console.error(`Dialog event ${arg.error}`);
+      }
     });
   });
 }
 
-async function initi18n(language?: string) {
-  const resources = {
-    en: {
-      translation: translationsEN,
-    },
-    de: {
-      translation: translationsDE,
-    },
-  };
-  // override browserlanguage if language is provided
-  if (language != "") {
-    await i18next.init({
-      resources,
-      lng: language,
-      // allow keys to be phrases having `:`, `.`
-      nsSeparator: false,
-      fallbackLng: "en",
-    });
-  } else {
-    await i18next.init({
-      resources,
-      // eslint-disable-next-line no-undef
-      lng: navigator.language,
-      // allow keys to be phrases having `:`, `.`
-      nsSeparator: false,
-      fallbackLng: "en",
-    });
+async function handleAuthMessage(message: string) {
+  let payload: { code?: string; error?: string };
+  try {
+    payload = JSON.parse(message);
+  } catch {
+    payload = { error: "invalid_message" };
   }
+  if (!payload.code) {
+    showError("signInFailed", payload.error);
+    return;
+  }
+
+  // ezp-auth exchanges the code for tokens when it mounts, which open() triggers.
+  // Authorization codes are single-use, so drop it once the exchange succeeded,
+  // otherwise the next open() would try to redeem it again.
+  ezpPrinting.addEventListener("authSuccess", () => (ezpPrinting.code = undefined), { once: true });
+  ezpPrinting.code = payload.code;
+  authorized = true;
+  await preparePrint();
+}
+
+async function logOut() {
+  await ezpPrinting.logOut();
+  authorized = false;
+  show("auth");
+}
+
+async function isActiveSheetEmpty(): Promise<boolean> {
+  return Excel.run(async (context) => {
+    const sheet = context.workbook.worksheets.getActiveWorksheet();
+    const range = sheet.getUsedRange();
+    sheet.load("name");
+    range.load(["address", "values"]);
+    await context.sync();
+    return range.address === `${sheet.name}!A1` && range.values[0][0] === "";
+  });
+}
+
+function loadFileName(): Promise<string> {
+  return new Promise((resolve) => {
+    Office.context.document.getFilePropertiesAsync((result) => {
+      const url = result.status === Office.AsyncResultStatus.Succeeded && result.value ? result.value.url : "";
+      if (!url) {
+        resolve("");
+        return;
+      }
+      // Desktop returns a local path, the web a URL: take the last segment of either.
+      const name = url.split(/[\\/]/).pop().split("?")[0];
+      try {
+        resolve(decodeURIComponent(name));
+      } catch {
+        resolve(name);
+      }
+    });
+  });
+}
+
+function whenDefined(tagName: string, timeoutMs: number): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const timer = window.setTimeout(
+      () => reject(new Error(`<${tagName}> was not defined within ${timeoutMs} ms`)),
+      timeoutMs
+    );
+    customElements.whenDefined(tagName).then(() => {
+      window.clearTimeout(timer);
+      resolve();
+    }, reject);
+  });
+}
+
+function runGuarded(action: () => Promise<void>) {
+  action().catch((error) => showError("genericError", error));
+}
+
+function show(section: Section) {
+  (Object.keys(sections) as Section[]).forEach((key) => {
+    if (sections[key]) {
+      sections[key].style.display = key === section ? "block" : "none";
+    }
+  });
+}
+
+function showError(key: string, detail?: unknown) {
+  if (detail !== undefined) {
+    console.error(detail);
+  }
+  if (errorMessage) {
+    errorMessage.innerText = i18next.isInitialized ? i18next.t(key) : translationsEN[key] || key;
+  }
+  if (sections) {
+    show("error");
+  }
+}
+
+async function initi18n(lng: string) {
+  await i18next.init({
+    resources: {
+      en: { translation: translationsEN },
+      de: { translation: translationsDE },
+    },
+    lng: lng || navigator.language,
+    // allow keys to be phrases having `:`, `.`
+    nsSeparator: false,
+    fallbackLng: "en",
+  });
 }
 
 function translate() {
@@ -274,31 +318,3 @@ function translate() {
   document.getElementById("logoutBtnLabel").innerText = i18next.t("logout");
   document.getElementById("noDataSection").innerText = i18next.t("noData");
 }
-
-const handlePrintFinished = () => {
-  continueSection.style.display = "block";
-};
-
-const openPrinterSelection = async () => {
-  continueSection.style.display = "none";
-  loadingSection.style.display = "";
-  await getFile();
-};
-
-const logOut = async () => {
-  await ezpPrinting.logOutandRevokeToken();
-  printingSection.style.display = "none";
-  authSection.style.display = "block";
-};
-
-const loadFileName = async () => {
-  return new Promise((resolve) => {
-    Office.context.document.getFilePropertiesAsync(null, (res) => {
-      if (res && res.value && res.value.url) {
-        let name = res.value.url.substring(res.value.url.lastIndexOf("\\") + 1);
-        resolve(name);
-      }
-      resolve("");
-    });
-  });
-};

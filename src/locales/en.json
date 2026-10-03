@@ -5,5 +5,10 @@
     "createAccount": "Sign Up",
     "continue": "Print",
     "logout": "Log Out",
-    "noData": "No data in sheet! Please close the ezeep Blue Add-in, add something and save before opening the ezeep Blue Add-in again."
+    "noData": "No data in sheet! Please close the ezeep Blue Add-in, add something and save before opening the ezeep Blue Add-in again.",
+    "genericError": "Something went wrong while preparing your document for printing. Please close the ezeep Blue Add-in and open it again.",
+    "unsupportedHost": "ezeep Blue printing is available in Word and Excel only.",
+    "unsupportedWordOnline": "Word on the web doesn't let add-ins export documents as PDF. Please open the document in the Word desktop app to print it with ezeep Blue.",
+    "dialogError": "The sign-in window couldn't be opened. Please allow pop-ups for Office and try again.",
+    "signInFailed": "Sign-in didn't complete. Please try again."
 }
