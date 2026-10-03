@@ -5,5 +5,10 @@
     "createAccount": "Registrieren",
     "continue": "Drucken",
     "logout": "Abmelden",
-    "noData": "Keine Daten gefunden! Bitte schließen sie das ezeep Blue Add-in, fügen Sie etwas zum Dokument hinzu und versuchen Sie es erneut."
+    "noData": "Keine Daten gefunden! Bitte schließen sie das ezeep Blue Add-in, fügen Sie etwas zum Dokument hinzu und versuchen Sie es erneut.",
+    "genericError": "Beim Vorbereiten des Dokuments für den Druck ist ein Fehler aufgetreten. Bitte schließen Sie das ezeep Blue Add-in und öffnen Sie es erneut.",
+    "unsupportedHost": "Drucken mit ezeep Blue ist nur in Word und Excel verfügbar.",
+    "unsupportedWordOnline": "Word im Web erlaubt Add-ins nicht, Dokumente als PDF zu exportieren. Bitte öffnen Sie das Dokument in der Word-Desktop-App, um es mit ezeep Blue zu drucken.",
+    "dialogError": "Das Anmeldefenster konnte nicht geöffnet werden. Bitte erlauben Sie Pop-ups für Office und versuchen Sie es erneut.",
+    "signInFailed": "Die Anmeldung wurde nicht abgeschlossen. Bitte versuchen Sie es erneut."
 }
