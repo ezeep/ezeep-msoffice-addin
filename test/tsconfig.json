@@ -1,0 +1,25 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "target": "es2019",
+    "lib": [
+      "es2019",
+      "dom",
+      "dom.iterable"
+    ],
+    "types": [
+      "jest",
+      "node",
+      "office-js"
+    ],
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "module": "commonjs"
+  },
+  "include": [
+    "**/*.ts",
+    "../src/**/*.ts"
+  ],
+  "exclude": []
+}
